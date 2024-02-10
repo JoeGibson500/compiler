@@ -8,10 +8,10 @@ I confirm that the following code has been developed and written by me and it is
 I also confirm that I have not copied any parts of this program from another person or any other source or facilitated someone to copy this program from me.
 I confirm that I will not publish the program online or share it with anyone without permission of the module leader.
 
-Student Name:
-Student ID:
-Email:
-Date Work Commenced:
+Student Name: Joseph Gibson 
+Student ID: 201619051
+Email: sc22jg@leeds.ac.uk
+Date Work Commenced: 08/02/2024
 *************************************************************************/
 
 
@@ -39,7 +39,33 @@ Date Work Commenced:
 // if everything goes well the function should return 1
 int InitLexer (char* file_name)
 {
-  return 0;
+  FILE *file = fopen(file_name, "r");
+
+  if (!file) 
+  {
+    printf("File open error");
+    return 0;
+  }
+  
+  // // char buffer[];
+  // int character;
+  // while((character = fgetc(file)) != EOF) 
+  // {
+  //   printf("%c", character);
+  // }
+  
+  //determine size of file
+  fseek(file, 0, SEEK_END);
+  long size_of_file = ftell(file);
+  fseek(file, 0, SEEK_SET);
+
+  //allocate memory for buffer allowing space for null terminator
+  char *buffer = (char *)malloc(size_of_file + 1);
+
+  
+  // printf("test");
+  fclose(file);
+  return 1;
 }
 
 
@@ -66,14 +92,13 @@ int StopLexer ()
 }
 
 // do not remove the next line
-#ifndef TEST
+// #ifndef TEST
 int main ()
 {
 	// implement your main function here
   // NOTE: the autograder will not use your main function
-
-  
+  printf("hello");
 	return 0;
 }
 // do not remove the next line
-#endif
+// #endif
