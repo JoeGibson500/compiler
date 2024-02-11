@@ -25,8 +25,33 @@ Date Work Commenced: 08/02/2024
 // YOU CAN ADD YOUR OWN FUNCTIONS, DECLARATIONS AND VARIABLES HERE
 
 
+char *buffer;
 
+//function to remove whitespace in the buffer
+int removeWhiteSpace(char *filePointer) 
+{
+    if(!filePointer)
+    {
+      return 0;
+    }
 
+    while (isspace(buffer[*filePointer]))
+    {
+      filePointer++;
+    }
+
+    return 1;
+}
+
+char peekNextCharacter(char *filePointer)
+{
+  char *temporaryFilePointer;
+  temporaryFilePointer = filePointer;
+
+  temporaryFilePointer++;
+
+  return *temporaryFilePointer;
+}
 
 
 // IMPLEMENT THE FOLLOWING functions
@@ -47,23 +72,20 @@ int InitLexer (char* file_name)
     return 0;
   }
   
-  // // char buffer[];
-  // int character;
-  // while((character = fgetc(file)) != EOF) 
-  // {
-  //   printf("%c", character);
-  // }
-  
   //determine size of file
   fseek(file, 0, SEEK_END);
   long size_of_file = ftell(file);
   fseek(file, 0, SEEK_SET);
 
   //allocate memory for buffer allowing space for null terminator
-  char *buffer = (char *)malloc(size_of_file + 1);
+  buffer = (char *)malloc(size_of_file + 1);
 
-  
-  // printf("test");
+  int bytes_read = fread(buffer, 1 , size_of_file, file);
+  if(bytes_read != size_of_file)
+  {
+    return 0;
+  }
+
   fclose(file);
   return 1;
 }
@@ -74,7 +96,58 @@ Token GetNextToken ()
 {
 	Token t;
   t.tp = ERR;
-  return t;
+
+  char *filePointer;
+  filePointer = buffer;
+  //1.skip any whitespace characters until we hit a non-whitespace character C
+  if (removeWhiteSpace(filePointer) == 0)
+  {
+    printf("File read error");
+  }
+  else {
+    
+    printf("%c", *filePointer);
+    // C = (//) -> skip all the characters in the body of the comment and go back to 1
+    if (*filePointer == '/')
+    {
+      char nextCharacter = peekNextCharacter(filePointer);
+      
+      if (nextCharacter == '/')
+      {
+        while (*filePointer != '\n')
+        {
+          
+          (*filePointer)++;
+        }
+      }
+    }
+
+  }
+
+ 
+  
+
+  return t; 
+
+
+  /*
+
+  C = (//) -> skip all the characters in the body of the comment and go back to 1
+
+  C = (-1) -> return EOF token 
+
+  C = (") -> keep reading more characters and store them into a string, until you hit another ""
+             put the resulting string (lexeme) into a token, of type string_ literal, and return the token.
+
+  C = (letter) -> Keep reading more letters and/or digits, putting the into a string until a character that is
+                  neither a letter nor a digit. 
+                  Put the string (lexeme) in a token with a proper token type ( keyword or id) and return the token.
+
+  C = (digit) -> Keep reading more digits, putting them into a string, until you hit a character that is not a digit.
+                 Put the resulting in a token of type number, and return the token.
+  C = (Symbol) -> Since is it not a letter or digit, tokenize it and return the token.  
+  
+  */
 }
 
 // peek (look) at the next token in the source file without removing it from the stream
@@ -92,13 +165,14 @@ int StopLexer ()
 }
 
 // do not remove the next line
-// #ifndef TEST
+#ifndef TEST
 int main ()
 {
 	// implement your main function here
   // NOTE: the autograder will not use your main function
-  printf("hello");
+  InitLexer("whiteSpaceFile.txt");
+  GetNextToken();
 	return 0;
 }
 // do not remove the next line
-// #endif
+#endif
