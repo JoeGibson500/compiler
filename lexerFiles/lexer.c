@@ -27,30 +27,44 @@ Date Work Commenced: 08/02/2024
 
 char *buffer;
 
-//function to remove whitespace in the buffer
-int removeWhiteSpace(char *filePointer) 
-{
-    if(!filePointer)
-    {
-      return 0;
-    }
-
-    while (isspace(buffer[*filePointer]))
-    {
-      filePointer++;
-    }
-
-    return 1;
-}
-
-char peekNextCharacter(char *filePointer)
-{
+//function to check next character without incrementing the original filePointer
+char peekNextCharacter(char *filePointer) {
   char *temporaryFilePointer;
   temporaryFilePointer = filePointer;
 
   temporaryFilePointer++;
 
   return *temporaryFilePointer;
+}
+
+//function to remove whitespace in the buffer
+char* skipWhitespaceAndComment(char *filePointer) {
+    if(!filePointer) { 
+    
+      return 0;
+    }
+
+    while (*filePointer != '\0') { // Check we are not at end of buffer
+    
+      
+      if (isspace((unsigned char)*filePointer)) { //remove whitespace 
+        filePointer++;
+      }
+      else if (*filePointer == '/' && peekNextCharacter(filePointer) == '/') { //skip past comment
+        filePointer += 2;
+        while (*filePointer != '\n' && *filePointer != '\0') {
+          filePointer++;
+        }
+        if (*filePointer == '\n') {
+          filePointer++; // move to next line 
+        }
+      }
+      else {
+        // we have reached a non comment and non whitespace character 
+        break;
+      }
+    }
+    return filePointer;
 }
 
 
@@ -62,27 +76,24 @@ char peekNextCharacter(char *filePointer)
 // This requires opening the file and making any necessary initialisations of the lexer
 // If an error occurs, the function should return 0
 // if everything goes well the function should return 1
-int InitLexer (char* file_name)
-{
+int InitLexer (char* file_name) {
   FILE *file = fopen(file_name, "r");
 
-  if (!file) 
-  {
+  if (!file) {
     printf("File open error");
     return 0;
   }
   
   //determine size of file
   fseek(file, 0, SEEK_END);
-  long size_of_file = ftell(file);
+  long sizeOfFile = ftell(file);
   fseek(file, 0, SEEK_SET);
 
   //allocate memory for buffer allowing space for null terminator
-  buffer = (char *)malloc(size_of_file + 1);
+  buffer = (char *)malloc(sizeOfFile + 1);
 
-  int bytes_read = fread(buffer, 1 , size_of_file, file);
-  if(bytes_read != size_of_file)
-  {
+  int bytes_read = fread(buffer, 1 , sizeOfFile, file);
+  if(bytes_read != sizeOfFile) {
     return 0;
   }
 
@@ -92,39 +103,44 @@ int InitLexer (char* file_name)
 
 
 // Get the next token from the source file
-Token GetNextToken ()
-{
+Token GetNextToken () {
 	Token t;
   t.tp = ERR;
 
   char *filePointer;
   filePointer = buffer;
-  //1.skip any whitespace characters until we hit a non-whitespace character C
-  if (removeWhiteSpace(filePointer) == 0)
-  {
-    printf("File read error");
-  }
-  else {
+  
+  filePointer = skipWhitespaceAndComment(filePointer);
     
-    printf("%c", *filePointer);
-    // C = (//) -> skip all the characters in the body of the comment and go back to 1
-    if (*filePointer == '/')
-    {
-      char nextCharacter = peekNextCharacter(filePointer);
+  if (*filePointer == '\0') {
+    
+    t.tp = EOFile;
+    return t;
+
+  } else if (*filePointer == '"') {
+    
+    filePointer++;
+    char *startOfString = filePointer; // point to the first element of string
+
+    while (*filePointer != '"' && *filePointer != '\0') {
+      filePointer++;
+    } 
+    if (*filePointer == '"') {
       
-      if (nextCharacter == '/')
-      {
-        while (*filePointer != '\n')
-        {
-          
-          (*filePointer)++;
-        }
-      }
+      t.tp = STRING;
+      int sizeOfString = filePointer - startOfString;
+      strncpy(t.lx, startOfString, sizeOfString);
+      t.lx[sizeOfString] = '\0';
     }
+    
+    filePointer++;
+
+  } else {
+    
+    t.tp = ERR;
+    t.ec = EofInStr;
 
   }
-
- 
   
 
   return t; 
@@ -132,11 +148,11 @@ Token GetNextToken ()
 
   /*
 
-  C = (//) -> skip all the characters in the body of the comment and go back to 1
+  (DONE)C = (//) -> skip all the characters in the body of the comment and go back to 1 
+  
+  (DONE)C = (-1) -> return EOF token 
 
-  C = (-1) -> return EOF token 
-
-  C = (") -> keep reading more characters and store them into a string, until you hit another ""
+  C = (") -> keep reading more characters and store them into a string, until you hit another "
              put the resulting string (lexeme) into a token, of type string_ literal, and return the token.
 
   C = (letter) -> Keep reading more letters and/or digits, putting the into a string until a character that is
@@ -151,27 +167,37 @@ Token GetNextToken ()
 }
 
 // peek (look) at the next token in the source file without removing it from the stream
-Token PeekNextToken ()
-{
+Token PeekNextToken () {
   Token t;
   t.tp = ERR;
   return t;
 }
 
 // clean out at end, e.g. close files, free memory, ... etc
-int StopLexer ()
-{
+int StopLexer () {
 	return 0;
 }
 
 // do not remove the next line
 #ifndef TEST
-int main ()
-{
+int main () {
 	// implement your main function here
   // NOTE: the autograder will not use your main function
-  InitLexer("whiteSpaceFile.txt");
-  GetNextToken();
+  InitLexer("stringLiteralFile.txt");
+  
+  Token nextToken =  GetNextToken();
+
+  if(nextToken.tp == EOFile) {
+    printf("token type = EOFile\n");
+  } else if (nextToken.tp == STRING) {
+    printf("token type = string, '%s' ",nextToken.lx);
+  }
+  else {
+    printf("token type = ERR\n");
+    
+  }
+
+  
 	return 0;
 }
 // do not remove the next line
