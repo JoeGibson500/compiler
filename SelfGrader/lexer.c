@@ -26,9 +26,6 @@ Date Work Commenced: 08/02/2024
 
 
 char *buffer;
-// char globalFileName[];
-Token tokens[1000];
-int tokenIndex = 0;
 int currentPosition = 0;
 const char* resWords[] = {"class", "constructor", "method", "function", /* Program components */
                           "int", "boolean", "char", "void", /* Primitive types */
@@ -87,7 +84,6 @@ bool isReservedWord(const char* token) {
   return false;
 }
 
-
 // IMPLEMENT THE FOLLOWING functions
 //***********************************
 
@@ -98,8 +94,6 @@ bool isReservedWord(const char* token) {
 // if everything goes well the function should return 1
 int InitLexer (char* file_name) {
   FILE *file = fopen(file_name, "r");
-
-  // strcpy(globalFileName, file_name);
 
   if (!file) {
     printf("File open error");
@@ -118,94 +112,7 @@ int InitLexer (char* file_name) {
   if(bytes_read != sizeOfFile) {
     return 0;
   }
-  
-  char *filePointer;
-  filePointer = buffer + currentPosition;
-  
-  while (*filePointer != '\0') {
 
-    Token t;
-    strcpy(t.fl, file_name);
-
-    filePointer = skipWhitespaceAndComment(filePointer);
-      
-    if (*filePointer == '\0') { // check if EOF
-      
-      t.tp = EOFile;
-      tokens[tokenIndex++] = t;
-      break;
-
-    } else if (*filePointer == '"') { // check if string literal 
-      
-      filePointer++;
-      char *startOfStringLiteral = filePointer; // point to the first element of string
-
-      while (*filePointer != '"' && *filePointer != '\0') {
-        filePointer++;
-      } 
-      if (*filePointer == '"') {
-        
-        t.tp = STRING;
-        int sizeOfStringLiteral = filePointer - startOfStringLiteral;
-        strncpy(t.lx, startOfStringLiteral, sizeOfStringLiteral);
-        t.lx[sizeOfStringLiteral] = '\0';
-        tokens[tokenIndex++] = t;
-
-      }
-      
-      filePointer++;
-
-    } else if (isalpha(*filePointer)) { // check to see if token is a string/character
-
-      char *startOfString = filePointer; //point to first element of string
-      
-      while (isalpha(*filePointer) && *filePointer != '\0') {
-        filePointer++;
-      }
-
-      int sizeOfString = filePointer - startOfString;
-      strncpy(t.lx, startOfString, sizeOfString);
-      t.lx[sizeOfString] = '\0';
-      tokens[tokenIndex++] = t;
-
-      filePointer++;
-
-      if (isReservedWord(t.lx)) {
-        t.tp = RESWORD;
-        tokens[tokenIndex++] = t;
-
-      } else {
-        t.tp = ID;
-        tokens[tokenIndex++] = t;
-
-      }
-    } else if (isdigit(*filePointer)) { // check to see if token is a number
-
-      char *startOfNumber = filePointer; //point to first element of number
-      
-      while (isdigit(*filePointer) && *filePointer != '\0') {
-        filePointer++;
-      }
-
-      int sizeOfNumber = filePointer - startOfNumber;
-      strncpy(t.lx, startOfNumber, sizeOfNumber);
-      t.lx[sizeOfNumber] = '\0';
-      t.tp = INT;
-      tokens[tokenIndex++] = t;
-
-      filePointer++;
-    } else { //since digit is neither a letter nor digit, it is a symbol
-
-      t.tp = SYMBOL;
-      t.lx[0] = *filePointer;
-      t.lx[1] = '\0';
-      tokens[tokenIndex++] = t;
-      filePointer++;
-
-    }
-  }
-
-  currentPosition = filePointer - buffer;
   fclose(file);
   return 1;
 }
@@ -213,10 +120,60 @@ int InitLexer (char* file_name) {
 
 // Get the next token from the source file
 Token GetNextToken () {
-	static int currentIndex = 0; // Static variable to keep track of the current index
-  return tokens[currentIndex++];
-  
+	Token t;
+  t.tp = ERR;
 
+  char *filePointer;
+  filePointer = buffer + currentPosition;
+  
+  filePointer = skipWhitespaceAndComment(filePointer);
+    
+  if (*filePointer == '\0') { // check if EOF
+    
+    t.tp = EOFile;
+    return t;
+
+  } else if (*filePointer == '"') { // check if string literal 
+    
+    filePointer++;
+    char *startOfStringLiteral = filePointer; // point to the first element of string
+
+    while (*filePointer != '"' && *filePointer != '\0') {
+      filePointer++;
+    } 
+    if (*filePointer == '"') {
+      
+      t.tp = STRING;
+      int sizeOfStringLiteral = filePointer - startOfStringLiteral;
+      strncpy(t.lx, startOfStringLiteral, sizeOfStringLiteral);
+      t.lx[sizeOfStringLiteral] = '\0';
+    }
+    
+    filePointer++;
+
+  } else if (isalpha(*filePointer)) {
+
+    char *startOfString = filePointer; //point to first element of string
+    
+    while (isalpha(*filePointer) && *filePointer != '\0') {
+      filePointer++;
+    }
+
+    int sizeOfString = filePointer - startOfString;
+    strncpy(t.lx, startOfString, sizeOfString);
+    t.lx[sizeOfString] = '\0';
+
+    filePointer++;
+
+    if (isReservedWord(t.lx)) {
+      t.tp = RESWORD;
+    } else {
+      t.tp = ID;
+    }
+  }
+  
+  currentPosition = filePointer - buffer;
+  return t; 
 
 
   /*
@@ -228,13 +185,13 @@ Token GetNextToken () {
   (DONE)C = (") -> keep reading more characters and store them into a string, until you hit another "
              put the resulting string (lexeme) into a token, of type string_ literal, and return the token.
 
-  (DONE)C = (letter) -> Keep reading more letters and/or digits, putting the into a string until a character that is
+  C = (letter) -> Keep reading more letters and/or digits, putting the into a string until a character that is
                   neither a letter nor a digit. 
                   Put the string (lexeme) in a token with a proper token type (keyword or id) and return the token.
 
-  (DONE)C = (digit) -> Keep reading more digits, putting them into a string, until you hit a character that is not a digit.
-                       Put the resulting in a token of type number, and return the token.
-  (DONE)C = (Symbol) -> Since is it not a letter or digit, tokenize it and return the token.  
+  C = (digit) -> Keep reading more digits, putting them into a string, until you hit a character that is not a digit.
+                 Put the resulting in a token of type number, and return the token.
+  C = (Symbol) -> Since is it not a letter or digit, tokenize it and return the token.  
   
   */
 }
@@ -258,10 +215,15 @@ int main () {
   // NOTE: the autograder will not use your main function
   InitLexer("whiteSpaceFile.txt");
   Token nextToken =  GetNextToken();
-  while (nextToken.tp != EOFile) {
-    printf("token type = %u, token lexeme = %s\n", nextToken.tp, nextToken.lx);
-    nextToken = GetNextToken();
-  }
+  // while (nextToken.tp != EOFile) {
+  //   printf("token type = %u, token lexeme = %s", nextToken.tp, nextToken.lx);
+  //   nextToken = GetNextToken();
+  // }
+  // printf("token type = %u, token lexeme = %s\n", nextToken.tp, nextToken.lx);
+  // Token newToken = GetNextToken();
+  // printf("token type = %u, token lexeme = %s\n", newToken.tp, newToken.lx);
+  // Token newerToken = GetNextToken();
+  // printf("token type = %u, token lexeme = %s\n", newerToken.tp, newerToken.lx);
   free(buffer);
   buffer = NULL;
 }
