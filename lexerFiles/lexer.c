@@ -29,6 +29,7 @@ char *buffer;
 // char globalFileName[];
 Token tokens[1000];
 int tokenIndex = 0;
+int lineNumber = 1;
 int currentPosition = 0;
 const char* resWords[] = {"class", "constructor", "method", "function", /* Program components */
                           "int", "boolean", "char", "void", /* Primitive types */
@@ -55,12 +56,10 @@ char* skipWhitespaceAndComment(char *filePointer) {
     }
 
     while (*filePointer != '\0') { // Check we are not at end of buffer
-    
-      
+
       if (isspace((unsigned char)*filePointer)) { //remove whitespace 
         filePointer++;
-      }
-      else if (*filePointer == '/' && peekNextCharacter(filePointer) == '/') { //skip past comment
+      } else if (*filePointer == '/' && peekNextCharacter(filePointer) == '/') { //skip past comment
         filePointer += 2;
         while (*filePointer != '\n' && *filePointer != '\0') {
           filePointer++;
@@ -68,6 +67,21 @@ char* skipWhitespaceAndComment(char *filePointer) {
         if (*filePointer == '\n') {
           filePointer++; // move to next line 
         }
+      } else if (*filePointer == '/' && peekNextCharacter(filePointer) == '*') { //skip past comment
+        
+        filePointer += 2;
+        // while (!(*filePointer == '*' && peekNextCharacter(filePointer) == '/')) {
+        while (*filePointer != '\0' && !(*filePointer == '*' && peekNextCharacter(filePointer) == '/')) {
+          if (*filePointer == '\n') {
+            lineNumber++;
+          }
+          if (*filePointer == '\0') {
+          printf("comment has no end comment");
+          }
+          filePointer++;
+        }
+          
+      filePointer += 2;
       }
       else {
         // we have reached a non comment and non whitespace character 
@@ -124,8 +138,13 @@ int InitLexer (char* file_name) {
   
   while (*filePointer != '\0') {
 
+    
     Token t;
     strcpy(t.fl, file_name);
+    t.ln = lineNumber; // Save the current line number
+    if (*filePointer == '\n') { // Increment line number if newline character encountered
+        lineNumber++;
+    }
 
     filePointer = skipWhitespaceAndComment(filePointer);
       
@@ -256,10 +275,10 @@ int StopLexer () {
 int main () {
 	// implement your main function here
   // NOTE: the autograder will not use your main function
-  InitLexer("whiteSpaceFile.txt");
+  InitLexer("SquareGame.jack");
   Token nextToken =  GetNextToken();
   while (nextToken.tp != EOFile) {
-    printf("token type = %u, token lexeme = %s\n", nextToken.tp, nextToken.lx);
+    printf("token type = %u, token lexeme = %s, line number = %d\n", nextToken.tp, nextToken.lx, nextToken.ln);
     nextToken = GetNextToken();
   }
   free(buffer);
