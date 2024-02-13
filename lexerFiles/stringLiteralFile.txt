@@ -1,1 +1,2 @@
-"this is a bigger string. 1234"
+identifier 
+function
