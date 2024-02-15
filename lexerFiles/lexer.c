@@ -26,10 +26,10 @@ Date Work Commenced: 08/02/2024
 
 
 char *buffer;
-// char globalFileName[];
 Token tokens[1000];
 int tokenIndex = 0;
 int lineNumber;
+FILE *file;
 
 int currentPosition = 0;
 const char* resWords[] = {"class", "constructor", "method", "function", /* Program components */
@@ -104,7 +104,7 @@ bool isReservedWord(const char* token) {
 // If an error occurs, the function should return 0
 // if everything goes well the function should return 1
 int InitLexer (char* file_name) {
-  FILE *file = fopen(file_name, "r");
+  file = fopen(file_name, "r");
 
   // strcpy(globalFileName, file_name);
 
@@ -264,6 +264,10 @@ Token PeekNextToken () {
 
 // clean out at end, e.g. close files, free memory, ... etc
 int StopLexer () {
+
+  fclose(file);
+  free(buffer);
+  buffer = NULL;
 	return 0;
 }
 
@@ -280,8 +284,6 @@ int main () {
     nextToken = GetNextToken();
   }
   // printf("line number = %d\n", lineNumber);
-  free(buffer);
-  buffer = NULL;
 }
 // do not remove the next line
 #endif
