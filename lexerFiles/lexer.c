@@ -29,7 +29,8 @@ char *buffer;
 // char globalFileName[];
 Token tokens[1000];
 int tokenIndex = 0;
-int lineNumber = 1;
+int lineNumber;
+
 int currentPosition = 0;
 const char* resWords[] = {"class", "constructor", "method", "function", /* Program components */
                           "int", "boolean", "char", "void", /* Primitive types */
@@ -48,48 +49,40 @@ char peekNextCharacter(char *filePointer) {
   return *temporaryFilePointer;
 }
 
-//function to remove whitespace in the buffer
-char* skipWhitespaceAndComment(char *filePointer) {
-    if(!filePointer) { 
-    
-      return 0;
+char* skipWhiteSpaceAndComment(char *filePointer) {
+    if (!filePointer) {
+        return NULL;
     }
 
-    while (*filePointer != '\0') { // Check we are not at end of buffer
-
-      if (isspace((unsigned char)*filePointer)) { //remove whitespace 
-        filePointer++;
-      } else if (*filePointer == '/' && peekNextCharacter(filePointer) == '/') { //skip past comment
-        filePointer += 2;
-        while (*filePointer != '\n' && *filePointer != '\0') {
-          filePointer++;
-        }
+    while (*filePointer != '\0') {
         if (*filePointer == '\n') {
-          filePointer++; // move to next line 
-        }
-      } else if (*filePointer == '/' && peekNextCharacter(filePointer) == '*') { //skip past comment
-        
-        filePointer += 2;
-        // while (!(*filePointer == '*' && peekNextCharacter(filePointer) == '/')) {
-        while (*filePointer != '\0' && !(*filePointer == '*' && peekNextCharacter(filePointer) == '/')) {
-          if (*filePointer == '\n') {
             lineNumber++;
-          }
-          if (*filePointer == '\0') {
-          printf("comment has no end comment");
-          }
-          filePointer++;
+            filePointer++;
+        } else if (isspace((unsigned char)*filePointer)) {
+            filePointer++;
+        } else if (*filePointer == '/' && peekNextCharacter(filePointer) == '/') {
+            while (*filePointer != '\n' && *filePointer != '\0') {
+                filePointer++;
+            }
+        } else if (*filePointer == '/' && peekNextCharacter(filePointer) == '*') {
+            filePointer += 2; // Skip the initial /*
+            while (*filePointer != '\0' && !(*filePointer == '*' && peekNextCharacter(filePointer) == '/')) {
+                if (*filePointer == '\n') {
+                    lineNumber++;
+                }
+                filePointer++;
+            }
+            if (*filePointer != '\0') {
+                filePointer += 2; // Skip past */
+            }
+        } else {
+            break; // If none of the conditions are met, it's not whitespace or a comment
         }
-          
-      filePointer += 2;
-      }
-      else {
-        // we have reached a non comment and non whitespace character 
-        break;
-      }
     }
     return filePointer;
 }
+
+
 
 bool isReservedWord(const char* token) {
   int numResWords = sizeof(resWords) / sizeof(resWords[0]);
@@ -132,21 +125,26 @@ int InitLexer (char* file_name) {
   if(bytes_read != sizeOfFile) {
     return 0;
   }
+
+  buffer[sizeOfFile] = '\0';
   
   char *filePointer;
   filePointer = buffer + currentPosition;
+
+  lineNumber = 1;
   
   while (*filePointer != '\0') {
-
     
     Token t;
     strcpy(t.fl, file_name);
-    t.ln = lineNumber; // Save the current line number
-    if (*filePointer == '\n') { // Increment line number if newline character encountered
-        lineNumber++;
-    }
+    filePointer = skipWhiteSpaceAndComment(filePointer);
 
-    filePointer = skipWhitespaceAndComment(filePointer);
+    t.ln = lineNumber; // Save the current line number
+    // if (*filePointer == '\n') { // Increment line number if newline character encountered
+    //     lineNumber++;
+    // }
+
+    // filePointer = skipWhiteSpaceAndComment(filePointer);
       
     if (*filePointer == '\0') { // check if EOF
       
@@ -185,19 +183,17 @@ int InitLexer (char* file_name) {
       int sizeOfString = filePointer - startOfString;
       strncpy(t.lx, startOfString, sizeOfString);
       t.lx[sizeOfString] = '\0';
-      tokens[tokenIndex++] = t;
 
-      filePointer++;
+      // filePointer++;
 
       if (isReservedWord(t.lx)) {
         t.tp = RESWORD;
-        tokens[tokenIndex++] = t;
 
       } else {
         t.tp = ID;
-        tokens[tokenIndex++] = t;
-
       }
+      tokens[tokenIndex++] = t;
+
     } else if (isdigit(*filePointer)) { // check to see if token is a number
 
       char *startOfNumber = filePointer; //point to first element of number
@@ -212,7 +208,7 @@ int InitLexer (char* file_name) {
       t.tp = INT;
       tokens[tokenIndex++] = t;
 
-      filePointer++;
+      // filePointer++;
     } else { //since digit is neither a letter nor digit, it is a symbol
 
       t.tp = SYMBOL;
@@ -224,7 +220,8 @@ int InitLexer (char* file_name) {
     }
   }
 
-  currentPosition = filePointer - buffer;
+  // currentPosition = filePointer - buffer;
+  currentPosition = 0;
   fclose(file);
   return 1;
 }
@@ -275,12 +272,14 @@ int StopLexer () {
 int main () {
 	// implement your main function here
   // NOTE: the autograder will not use your main function
-  InitLexer("SquareGame.jack");
+  InitLexer("Ball.jack");
   Token nextToken =  GetNextToken();
   while (nextToken.tp != EOFile) {
-    printf("token type = %u, token lexeme = %s, line number = %d\n", nextToken.tp, nextToken.lx, nextToken.ln);
+    // printf("token type = %u, token lexeme = %s, line number = %d\n", nextToken.tp, nextToken.lx, nextToken.ln);
+    printf("< %s, %d, %s, %u\n", nextToken.fl, nextToken.ln, nextToken.lx, nextToken.tp );
     nextToken = GetNextToken();
   }
+  // printf("line number = %d\n", lineNumber);
   free(buffer);
   buffer = NULL;
 }

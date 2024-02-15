@@ -4,12 +4,20 @@
 
 // and so is this 
 
-
-
 //this is some whitespace
-"string literal"
-test 
-to
-function
-65998
-%
+
+test 123 
+/*  
+
+ this is some test 
+ hello hello 
+
+
+*/
+class 
+
+
+
+hello 
+
+this is a test 
