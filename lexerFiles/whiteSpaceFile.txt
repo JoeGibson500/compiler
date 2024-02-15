@@ -5,15 +5,10 @@
 // and so is this 
 
 //this is some whitespace
+/*  */
 
 test 123 
-/*  
 
- this is some test 
- hello hello 
-
-
-*/
 class 
 
 
@@ -21,3 +16,4 @@ class
 hello 
 
 this is a test 
+this is a symbol -
