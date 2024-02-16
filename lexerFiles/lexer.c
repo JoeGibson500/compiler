@@ -129,6 +129,7 @@ int skipWhiteSpaceAndComment(Token token) {
             }
             if (character == EOF) {
                 token.ec = EofInCom;
+                token.tp = ERR;
                 return character; // EOF encountered during multi-line comment
             }
         } else {
@@ -199,11 +200,14 @@ Token generateToken() {
 
             if(character == '\n') {
             token.ec = NewLnInStr;
+            strcpy(t.lx, "Error: new line in string constant");
+            token.tp = ERR;
         }
         }
         if(character == EOF) {
             token.ec = EofInStr;
             strcpy(token.lx, "Error: unexpected eof in string constant");
+            token.tp;
             return token;
         }
         tempCharacters[i] = '\0';
