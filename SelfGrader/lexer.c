@@ -21,211 +21,231 @@ Date Work Commenced: 08/02/2024
 #include <ctype.h>
 #include "lexer.h"
 #include <stdbool.h>
+#define NUMRESWORDS 21
+#define MAXTOKENS 2000
+
 
 // YOU CAN ADD YOUR OWN FUNCTIONS, DECLARATIONS AND VARIABLES HERE
 
 
-char *buffer;
-int currentPosition = 0;
 const char* resWords[] = {"class", "constructor", "method", "function", /* Program components */
                           "int", "boolean", "char", "void", /* Primitive types */
                           "var", "static", "field", /* Variable declarations */
                           "let", "do", "if", "else", "while", "return", /* Statements */ 
                           "true", "false", "null", /* Constant values */
                           "this"}; /* Class Membership */
+const char symbols[19] = {
+    '(', ')', '[', ']', '{', '}',
+    ',', ';', '=', '.',
+    '+', '-', '*', '/', '&', '|', '<', '>', '~'
+};
 
-//function to check next character without incrementing the original filePointer
-char peekNextCharacter(char *filePointer) {
-  char *temporaryFilePointer;
-  temporaryFilePointer = filePointer;
+char* fileName;
 
-  temporaryFilePointer++;
+FILE* file;
+int tokenReady;
+Token token;
+int lineNumber;
 
-  return *temporaryFilePointer;
+
+int InitLexer(char* file_name) {
+
+
+    file = fopen(file_name, "r");
+    if(!file) {
+        return 0;
+    } 
+
+    fileName = file_name;
+  
+  tokenReady = 0;
+  lineNumber = 1;
+
+  return 1;
 }
 
-//function to remove whitespace in the buffer
-char* skipWhitespaceAndComment(char *filePointer) {
-    if(!filePointer) { 
-    
-      return 0;
-    }
-
-    while (*filePointer != '\0') { // Check we are not at end of buffer
-    
-      
-      if (isspace((unsigned char)*filePointer)) { //remove whitespace 
-        filePointer++;
-      }
-      else if (*filePointer == '/' && peekNextCharacter(filePointer) == '/') { //skip past comment
-        filePointer += 2;
-        while (*filePointer != '\n' && *filePointer != '\0') {
-          filePointer++;
+bool isSymbol(char character) {
+    int numSymbols = sizeof(symbols) / sizeof(symbols[0]);
+    for(int i = 0; i < numSymbols; i++) {
+        if (character == symbols[i]) { 
+            return true;
         }
-        if (*filePointer == '\n') {
-          filePointer++; // move to next line 
-        }
-      }
-      else {
-        // we have reached a non comment and non whitespace character 
-        break;
-      }
     }
-    return filePointer;
+    return false;
 }
 
-bool isReservedWord(const char* token) {
-  int numResWords = sizeof(resWords) / sizeof(resWords[0]);
-  for(int i=0; i < numResWords; i++) {
-    if (strcmp(token, resWords[i]) == 0) {
+bool isReservedWord(char* string) {
+  
+  for(int i=0; i < NUMRESWORDS; i++) {
+    if (strcmp(string, resWords[i]) == 0) {
       return true;
     }
   }
   return false;
 }
 
-// IMPLEMENT THE FOLLOWING functions
-//***********************************
+int skipWhiteSpaceAndComment() {
+    
+    int character;
+    character = getc(file);
+    while (character != EOF && isspace(character)) {
+        if (character == '\n') {
+           lineNumber++;
+        }
+        character = getc(file);
+    } // hit a nonspace character
 
-// Initialise the lexer to read from source file
-// file_name is the name of the source file
-// This requires opening the file and making any necessary initialisations of the lexer
-// If an error occurs, the function should return 0
-// if everything goes well the function should return 1
-int InitLexer (char* file_name) {
-  FILE *file = fopen(file_name, "r");
-
-  if (!file) {
-    printf("File open error");
-    return 0;
-  }
-  
-  //determine size of file
-  fseek(file, 0, SEEK_END);
-  long sizeOfFile = ftell(file);
-  fseek(file, 0, SEEK_SET);
-
-  //allocate memory for buffer allowing space for null terminator
-  buffer = (char *)malloc(sizeOfFile + 1);
-
-  int bytes_read = fread(buffer, 1 , sizeOfFile, file);
-  if(bytes_read != sizeOfFile) {
-    return 0;
-  }
-
-  fclose(file);
-  return 1;
+    if (character == '/') {
+        character = getc(file);
+        if (character == '/') {
+            // character = getc(file);
+            // if (character == '\n') lineNumber++;
+            while ( character != EOF && character != '\n') {
+                character = getc(file);
+                if (character == '\n')lineNumber++;
+            }
+            if (character == EOF) return character;
+            character = getc(file);
+            if (isspace(character) || character == '/') {
+                ungetc(character, file);
+                return skipWhiteSpaceAndComment();
+            }
+        } else if (character == '*') {
+            // Multi-line comment
+            int prev_char = 0;
+            while (character != EOF) {
+                // Check for the end of the comment
+                if (prev_char == '*' && character == '/') {
+                    // Read the next character after the comment
+                    character = getc(file);
+                    // Recursively call skipWhiteSpaceAndComment to handle consecutive comments
+                    return skipWhiteSpaceAndComment();
+                }
+                if (character == '\n') {
+                    lineNumber++;
+                }
+                // Update the previous character
+                prev_char = character;
+                // Read the next character
+                character = getc(file);
+            }
+        }
+    }
+    // Return the character if it's not part of a comment
+    return character;
 }
 
-
-// Get the next token from the source file
-Token GetNextToken () {
-	Token t;
-  t.tp = ERR;
-
-  char *filePointer;
-  filePointer = buffer + currentPosition;
-  
-  filePointer = skipWhitespaceAndComment(filePointer);
+Token generateToken() {
     
-  if (*filePointer == '\0') { // check if EOF
-    
-    t.tp = EOFile;
-    return t;
+    strcpy(token.fl, fileName);
+    token.tp = ERR;
 
-  } else if (*filePointer == '"') { // check if string literal 
-    
-    filePointer++;
-    char *startOfStringLiteral = filePointer; // point to the first element of string
-
-    while (*filePointer != '"' && *filePointer != '\0') {
-      filePointer++;
-    } 
-    if (*filePointer == '"') {
-      
-      t.tp = STRING;
-      int sizeOfStringLiteral = filePointer - startOfStringLiteral;
-      strncpy(t.lx, startOfStringLiteral, sizeOfStringLiteral);
-      t.lx[sizeOfStringLiteral] = '\0';
-    }
-    
-    filePointer++;
-
-  } else if (isalpha(*filePointer)) {
-
-    char *startOfString = filePointer; //point to first element of string
-    
-    while (isalpha(*filePointer) && *filePointer != '\0') {
-      filePointer++;
+    int character = skipWhiteSpaceAndComment();
+    if (character == EOF) {
+        token.tp = EOFile;
+        token.ln = lineNumber;
+        return token;
     }
 
-    int sizeOfString = filePointer - startOfString;
-    strncpy(t.lx, startOfString, sizeOfString);
-    t.lx[sizeOfString] = '\0';
+    int i = 0;
+    char tempCharacters[128];
+    if (isalpha(character)) {
 
-    filePointer++;
+        while(character != EOF && isalpha(character)) {
+            tempCharacters[i++] = character;
+            character = getc(file);
 
-    if (isReservedWord(t.lx)) {
-      t.tp = RESWORD;
+        }
+        tempCharacters[i] = '\0';
+        character = ungetc(character, file);
+
+        strcpy(token.lx, tempCharacters);
+        if (isReservedWord(tempCharacters)) {
+            token.tp = RESWORD;
+        } else {
+            token.tp = ID;
+        }
+        token.ln = lineNumber;
+        return token;
+
+    } else if (isdigit(character)) {
+        while(character != EOF && isdigit(character)) {
+            tempCharacters[i++] = character;
+            character = getc(file);
+        }
+        tempCharacters[i] = '\0';
+        character = ungetc(character, file);
+
+        strcpy(token.lx, tempCharacters);
+        token.tp = INT;
+        token.ln = lineNumber;
+        return token;        
+
+    } else if (character == '"') {
+        character = getc(file);
+        while(character != EOF && (character != '"')) {
+            tempCharacters[i++] = character;
+            character = getc(file);
+        }
+        tempCharacters[i] = '\0';
+        character = ungetc(character, file);
+
+        strcpy(token.lx, tempCharacters);
+        token.tp = STRING;
+        token.ln = lineNumber;
+        return token;
+
+    } else if (isSymbol(character)) {
+        tempCharacters[0] = character;
+        tempCharacters[1] = '\0';
+        strcpy(token.lx, tempCharacters);
+        token.ln = lineNumber;
+        return token;
     } else {
-      t.tp = ID;
+      return token;
     }
+}
+
+Token GetNextToken() { 
+
+  if(tokenReady) {
+    tokenReady = 0;
+    return token;
   }
-  
-  currentPosition = filePointer - buffer;
-  return t; 
-
-
-  /*
-
-  (DONE)C = (//) -> skip all the characters in the body of the comment and go back to 1 
-  
-  (DONE)C = (-1) -> return EOF token 
-
-  (DONE)C = (") -> keep reading more characters and store them into a string, until you hit another "
-             put the resulting string (lexeme) into a token, of type string_ literal, and return the token.
-
-  C = (letter) -> Keep reading more letters and/or digits, putting the into a string until a character that is
-                  neither a letter nor a digit. 
-                  Put the string (lexeme) in a token with a proper token type (keyword or id) and return the token.
-
-  C = (digit) -> Keep reading more digits, putting them into a string, until you hit a character that is not a digit.
-                 Put the resulting in a token of type number, and return the token.
-  C = (Symbol) -> Since is it not a letter or digit, tokenize it and return the token.  
-  
-  */
+  Token generatedToken = generateToken();
+  tokenReady = 0;
+  return generatedToken;
 }
 
-// peek (look) at the next token in the source file without removing it from the stream
-Token PeekNextToken () {
-  Token t;
-  t.tp = ERR;
-  return t;
+Token PeekNextToken() { 
+
+  if(tokenReady) {
+    return token;
+  }
+  Token generatedToken = generateToken();
+  tokenReady = 1;
+  return generatedToken;
 }
 
-// clean out at end, e.g. close files, free memory, ... etc
-int StopLexer () {
-	return 0;
+int StopLexer() {
+    fclose(file);
+    return 0;
 }
+
 
 // do not remove the next line
 #ifndef TEST
 int main () {
 	// implement your main function here
   // NOTE: the autograder will not use your main function
-  InitLexer("whiteSpaceFile.txt");
+  InitLexer("SquareGame.jack");
+  
   Token nextToken =  GetNextToken();
-  // while (nextToken.tp != EOFile) {
-  //   printf("token type = %u, token lexeme = %s", nextToken.tp, nextToken.lx);
-  //   nextToken = GetNextToken();
-  // }
-  // printf("token type = %u, token lexeme = %s\n", nextToken.tp, nextToken.lx);
-  // Token newToken = GetNextToken();
-  // printf("token type = %u, token lexeme = %s\n", newToken.tp, newToken.lx);
-  // Token newerToken = GetNextToken();
-  // printf("token type = %u, token lexeme = %s\n", newerToken.tp, newerToken.lx);
-  free(buffer);
-  buffer = NULL;
+  while (nextToken.tp != EOFile) {
+  // for (int i=0; i< 14; i++) {
+    printf("< %s, %d, %s, %u >\n", nextToken.fl, nextToken.ln, nextToken.lx, nextToken.tp );
+    nextToken = GetNextToken();
+  }
 }
 // do not remove the next line
 #endif

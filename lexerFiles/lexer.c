@@ -151,7 +151,7 @@ Token generateToken() {
     char tempCharacters[128];
     if (isalpha(character)) {
 
-        while(character != EOF && isalpha(character)) {
+        while(character != EOF && (isalnum(character) || character == '_')) {
             tempCharacters[i++] = character;
             character = getc(file);
 
@@ -238,7 +238,7 @@ int StopLexer() {
 int main () {
 	// implement your main function here
   // NOTE: the autograder will not use your main function
-  InitLexer("SquareGame.jack");
+  InitLexer("IdentifiersOnly.jack");
   
   Token nextToken =  GetNextToken();
   while (nextToken.tp != EOFile) {
