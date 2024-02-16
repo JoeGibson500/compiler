@@ -200,14 +200,14 @@ Token generateToken() {
 
             if(character == '\n') {
             token.ec = NewLnInStr;
-            strcpy(t.lx, "Error: new line in string constant");
+            strcpy(token.lx, "Error: new line in string constant");
             token.tp = ERR;
         }
         }
         if(character == EOF) {
             token.ec = EofInStr;
             strcpy(token.lx, "Error: unexpected eof in string constant");
-            token.tp;
+            token.tp = ERR;
             return token;
         }
         tempCharacters[i] = '\0';
@@ -226,7 +226,9 @@ Token generateToken() {
         token.ln = lineNumber;
         return token;
     } else {
-      return token;
+        token.ec = IllSym;
+        strcpy(token.lx, "Error: illegal symbol in source file");
+        return token;
     }
 }
 
@@ -262,7 +264,7 @@ int StopLexer() {
 int main () {
 	// implement your main function here
   // NOTE: the autograder will not use your main function
-  InitLexer("EofInStr.jack");
+  InitLexer("IllegalSymbol.jack");
   
   Token nextToken =  GetNextToken();
   while (nextToken.tp != EOFile) {
