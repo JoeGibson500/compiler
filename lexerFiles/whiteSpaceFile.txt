@@ -8,12 +8,6 @@
 /*  */
 
 test 123 
-
-class 
-
-
-
-hello 
-
-this is a test 
-this is a symbol -
+test
+123 
+*
