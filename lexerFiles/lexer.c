@@ -204,8 +204,6 @@ Token generateToken() {
     } else {
       return token;
     }
-
-
 }
 
 Token GetNextToken() { 
@@ -229,7 +227,10 @@ Token PeekNextToken() {
   return generatedToken;
 }
 
-
+int StopLexer() {
+    fclose(file);
+    return 0;
+}
 
 
 // do not remove the next line
@@ -245,8 +246,6 @@ int main () {
     printf("< %s, %d, %s, %u >\n", nextToken.fl, nextToken.ln, nextToken.lx, nextToken.tp );
     nextToken = GetNextToken();
   }
-  
-
 }
 // do not remove the next line
 #endif
