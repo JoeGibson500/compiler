@@ -84,7 +84,7 @@ bool isReservedWord(char* string) {
   return false;
 }
 
-int skipWhiteSpaceAndComment() {
+int skipWhiteSpaceAndComment(Token token) {
     int character;
     character = getc(file);
     while (character != EOF && isspace(character)) {
@@ -108,7 +108,7 @@ int skipWhiteSpaceAndComment() {
                 return character; // EOF encountered during single-line comment
             }
             // After a single-line comment, we continue to skip whitespace/comments
-            return skipWhiteSpaceAndComment();
+            return skipWhiteSpaceAndComment(token);
         } else if (character == '*') {
             // Multi-line comment
             int prev_char = 0;
@@ -121,13 +121,14 @@ int skipWhiteSpaceAndComment() {
                         lineNumber++; // Increment if the next character is a newline
                     }
                     // Exit the comment and handle any following content
-                    return skipWhiteSpaceAndComment();
+                    return skipWhiteSpaceAndComment(token);
                 } else if (character == '\n') {
                     lineNumber++;
                 }
                 prev_char = character; // Update the previous character after processing the current character
             }
             if (character == EOF) {
+                token.ec = EofInCom;
                 return character; // EOF encountered during multi-line comment
             }
         } else {
@@ -141,69 +142,12 @@ int skipWhiteSpaceAndComment() {
 }
 
 
-
-
-
-
-// int skipWhiteSpaceAndComment() {
-    
-//     int character;
-//     character = getc(file);
-//     while (character != EOF && isspace(character)) {
-//         if (character == '\n') {
-//            lineNumber++;
-//         }
-//         character = getc(file);
-//     } // hit a nonspace character
-
-//     if (character == '/') {
-//         character = getc(file);
-//         if (character == '/') {
-//             // character = getc(file);
-//             // if (character == '\n') lineNumber++;
-//             while ( character != EOF && character != '\n') {
-//                 character = getc(file);
-//                 if (character == '\n')lineNumber++;
-//                 // printf("encountered single line comment, character = %c\n", character);
-//             }
-//             if (character == EOF) return character;
-//             character = getc(file);
-//             if (isspace(character) || character == '/') {
-//                 ungetc(character, file);
-//                 return skipWhiteSpaceAndComment();
-//             }
-//         } else if (character == '*') {
-//             // Multi-line comment
-//             int prev_char = 0;
-//             while (character != EOF) {
-//                 // Update the previous character
-//                 prev_char = character;
-//                 // Read the next character
-//                 character = getc(file);
-
-//                 // Check for the end of the comment
-//                 if (prev_char == '*' && character == '/') {
-//                     // Peek the next character to decide if we should increment lineNumber
-//                     character = getc(file); // This now holds the character after the closing '/'
-//                     if (character == '\n') {
-//                         lineNumber++; // Increment if the next character is a newline
-//                     }
-//                     // Exit the comment and handle any following content
-//                     return skipWhiteSpaceAndComment();
-//                 } else if (character == '\n') {
-//                     lineNumber++;
-//                 }
-//             }
-//         }
-//     }
-// }
-
 Token generateToken() {
     
     strcpy(token.fl, fileName);
     token.tp = ERR;
 
-    int character = skipWhiteSpaceAndComment();
+    int character = skipWhiteSpaceAndComment(token);
     // printf("character = %c\n", character);
     if (character == EOF) {
         // printf("EOFile character reached.");
@@ -252,6 +196,15 @@ Token generateToken() {
         while(character != EOF && (character != '"')) {
             tempCharacters[i++] = character;
             character = getc(file);
+
+            if(character == '\n') {
+            token.ec = NewLnInStr;
+        }
+        }
+        if(character == EOF) {
+            token.ec = EofInStr;
+            strcpy(token.lx, "Error: unexpected eof in string constant");
+            return token;
         }
         tempCharacters[i] = '\0';
         character = ungetc(character, file);
@@ -305,7 +258,7 @@ int StopLexer() {
 int main () {
 	// implement your main function here
   // NOTE: the autograder will not use your main function
-  InitLexer("List.jack");
+  InitLexer("EofInStr.jack");
   
   Token nextToken =  GetNextToken();
   while (nextToken.tp != EOFile) {
