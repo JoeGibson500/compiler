@@ -19,7 +19,7 @@ Date Work Commenced: 08/02/2024
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include "newLexer.h"
+#include "lexer.h"
 #include <stdbool.h>
 #define NUMRESWORDS 21
 #define MAXTOKENS 2000
@@ -85,55 +85,118 @@ bool isReservedWord(char* string) {
 }
 
 int skipWhiteSpaceAndComment() {
-    
     int character;
     character = getc(file);
     while (character != EOF && isspace(character)) {
         if (character == '\n') {
-           lineNumber++;
+            lineNumber++;
         }
         character = getc(file);
-    } // hit a nonspace character
+    } // hit a non-space character
 
     if (character == '/') {
         character = getc(file);
         if (character == '/') {
-            // character = getc(file);
-            // if (character == '\n') lineNumber++;
-            while ( character != EOF && character != '\n') {
+            // Single-line comment
+            while (character != EOF && character != '\n') {
                 character = getc(file);
-                if (character == '\n')lineNumber++;
             }
-            if (character == EOF) return character;
-            character = getc(file);
-            if (isspace(character) || character == '/') {
-                ungetc(character, file);
-                return skipWhiteSpaceAndComment();
+            if (character == '\n') {
+                lineNumber++;
             }
+            if (character == EOF) {
+                return character; // EOF encountered during single-line comment
+            }
+            // After a single-line comment, we continue to skip whitespace/comments
+            return skipWhiteSpaceAndComment();
         } else if (character == '*') {
             // Multi-line comment
             int prev_char = 0;
             while (character != EOF) {
+                character = getc(file); // Read the next character first to correctly handle characters after '*'
                 // Check for the end of the comment
                 if (prev_char == '*' && character == '/') {
-                    // Read the next character after the comment
-                    character = getc(file);
-                    // Recursively call skipWhiteSpaceAndComment to handle consecutive comments
+                    character = getc(file); // Peek the next character after the closing '/'
+                    if (character == '\n') {
+                        lineNumber++; // Increment if the next character is a newline
+                    }
+                    // Exit the comment and handle any following content
                     return skipWhiteSpaceAndComment();
-                }
-                if (character == '\n') {
+                } else if (character == '\n') {
                     lineNumber++;
                 }
-                // Update the previous character
-                prev_char = character;
-                // Read the next character
-                character = getc(file);
+                prev_char = character; // Update the previous character after processing the current character
             }
+            if (character == EOF) {
+                return character; // EOF encountered during multi-line comment
+            }
+        } else {
+            // Not a comment, return the '/' and the next character to be processed
+            ungetc(character, file); // Put back the character after '/'
+            return '/'; // Return '/' to indicate it's not part of a comment
         }
     }
-    // Return the character if it's not part of a comment
+    // If the character is not a '/' or after processing comments, return the character
     return character;
 }
+
+
+
+
+
+
+// int skipWhiteSpaceAndComment() {
+    
+//     int character;
+//     character = getc(file);
+//     while (character != EOF && isspace(character)) {
+//         if (character == '\n') {
+//            lineNumber++;
+//         }
+//         character = getc(file);
+//     } // hit a nonspace character
+
+//     if (character == '/') {
+//         character = getc(file);
+//         if (character == '/') {
+//             // character = getc(file);
+//             // if (character == '\n') lineNumber++;
+//             while ( character != EOF && character != '\n') {
+//                 character = getc(file);
+//                 if (character == '\n')lineNumber++;
+//                 // printf("encountered single line comment, character = %c\n", character);
+//             }
+//             if (character == EOF) return character;
+//             character = getc(file);
+//             if (isspace(character) || character == '/') {
+//                 ungetc(character, file);
+//                 return skipWhiteSpaceAndComment();
+//             }
+//         } else if (character == '*') {
+//             // Multi-line comment
+//             int prev_char = 0;
+//             while (character != EOF) {
+//                 // Update the previous character
+//                 prev_char = character;
+//                 // Read the next character
+//                 character = getc(file);
+
+//                 // Check for the end of the comment
+//                 if (prev_char == '*' && character == '/') {
+//                     // Peek the next character to decide if we should increment lineNumber
+//                     character = getc(file); // This now holds the character after the closing '/'
+//                     if (character == '\n') {
+//                         lineNumber++; // Increment if the next character is a newline
+//                     }
+//                     // Exit the comment and handle any following content
+//                     return skipWhiteSpaceAndComment();
+//                 } else if (character == '\n') {
+//                     lineNumber++;
+//                 }
+//             }
+//         }
+//     }
+// }
 
 Token generateToken() {
     
@@ -141,15 +204,18 @@ Token generateToken() {
     token.tp = ERR;
 
     int character = skipWhiteSpaceAndComment();
+    // printf("character = %c\n", character);
     if (character == EOF) {
+        // printf("EOFile character reached.");
         token.tp = EOFile;
+        strcpy(token.lx, "End of File");
         token.ln = lineNumber;
         return token;
     }
 
     int i = 0;
     char tempCharacters[128];
-    if (isalpha(character)) {
+    if (isalpha(character) || character == '_') {
 
         while(character != EOF && (isalnum(character) || character == '_')) {
             tempCharacters[i++] = character;
@@ -199,6 +265,7 @@ Token generateToken() {
         tempCharacters[0] = character;
         tempCharacters[1] = '\0';
         strcpy(token.lx, tempCharacters);
+        token.tp = SYMBOL;
         token.ln = lineNumber;
         return token;
     } else {
@@ -238,14 +305,16 @@ int StopLexer() {
 int main () {
 	// implement your main function here
   // NOTE: the autograder will not use your main function
-  InitLexer("IdentifiersOnly.jack");
+  InitLexer("List.jack");
   
   Token nextToken =  GetNextToken();
   while (nextToken.tp != EOFile) {
-  // for (int i=0; i< 14; i++) {
+//   for (int i=0; i< 152; i++) {
     printf("< %s, %d, %s, %u >\n", nextToken.fl, nextToken.ln, nextToken.lx, nextToken.tp );
     nextToken = GetNextToken();
   }
+  nextToken = GetNextToken();
+  printf("< %s, %d, %s, %u >\n", nextToken.fl, nextToken.ln, nextToken.lx, nextToken.tp );
 }
 // do not remove the next line
 #endif
