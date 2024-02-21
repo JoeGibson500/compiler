@@ -152,7 +152,6 @@ Token generateToken() {
 
     int character = skipWhiteSpaceAndComment(&token);
     
-    // printf("token line number = %d\n", token.ln);
     if (token.ec == EofInCom) {
         // Error handling for unexpected EOF in comment
         // Since skipWhiteSpaceAndComment already set the token.lexeme, just return the token
@@ -213,6 +212,7 @@ Token generateToken() {
             if(character == '\n') {
                 token.ec = NewLnInStr;
                 strcpy(token.lx, "Error: new line in string constant");
+                token.ln = lineNumber;
                 token.tp = ERR;
                 return token;
             }
