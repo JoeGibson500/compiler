@@ -126,7 +126,13 @@ int skipWhiteSpaceAndComment(Token *token) {
                         // Exit the comment and handle any following content
                         return skipWhiteSpaceAndComment(token);
                     }
+                } else if (character == '\n') {
+                    lineNumber++;
                 }
+
+
+
+
                 prev_char = character; // Update the previous character after processing the current character
             }
             if (character == EOF) {
@@ -160,7 +166,6 @@ Token generateToken() {
         // Since skipWhiteSpaceAndComment already set the token.lexeme, just return the token
         strcpy(token.lx, "Error: unexpected eof in comment");
         token.tp = ERR;
-        
         token.ln = lineNumber;
         return token;
 
@@ -283,7 +288,7 @@ int StopLexer() {
 int main () {
 	// implement your main function here
   // NOTE: the autograder will not use your main function
-  InitLexer("Fraction.jack");
+  InitLexer("Ball.jack");
   
   Token nextToken =  GetNextToken();
   while (nextToken.tp != EOFile) {
