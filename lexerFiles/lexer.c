@@ -129,7 +129,6 @@ int skipWhiteSpaceAndComment(Token *token) {
             }
             if (character == EOF) {
                 token->ec = EofInCom;
-                printf("SHOUGDJDBSISD");
                 strcpy(token->lx, "Error: unexpected eof in comment");
                 return character; // EOF encountered during multi-line comment
             }
@@ -152,14 +151,14 @@ Token generateToken() {
     // printf("token.ec before is %d\n", token.ec);
 
     int character = skipWhiteSpaceAndComment(&token);
-
+    
+    // printf("token line number = %d\n", token.ln);
     if (token.ec == EofInCom) {
         // Error handling for unexpected EOF in comment
         // Since skipWhiteSpaceAndComment already set the token.lexeme, just return the token
         strcpy(token.lx, "Error: unexpected eof in comment");
         token.tp = ERR;
         
-        printf("token.ec in if statement = %d\n", token.ec);
         token.ln = lineNumber;
         return token;
 
@@ -212,18 +211,24 @@ Token generateToken() {
             character = getc(file);
 
             if(character == '\n') {
-            token.ec = NewLnInStr;
-            strcpy(token.lx, "Error: new line in string constant");
-            token.tp = ERR;
+                token.ec = NewLnInStr;
+                strcpy(token.lx, "Error: new line in string constant");
+                token.tp = ERR;
+            }
+            if(character == EOF) {
+                token.ec = EofInStr;
+                strcpy(token.lx, "Error: unexpected eof in string constant");
+                token.ln = lineNumber;
+                token.tp = ERR;
+                return token;
+            }
         }
-        }
-        if(character == EOF) {
-            token.ec = EofInStr;
-            printf("test");
-            strcpy(token.lx, "Error: unexpected eof in string constant");
-            token.tp = ERR;
-            return token;
-        }
+        // if(character == EOF) {
+        //     token.ec = EofInStr;
+        //     strcpy(token.lx, "Error: unexpected eof in string constant");
+        //     token.tp = ERR;
+        //     return token;
+        // }
         tempCharacters[i] = '\0';
         // character = ungetc(character, file);
 
@@ -279,7 +284,7 @@ int StopLexer() {
 int main () {
 	// implement your main function here
   // NOTE: the autograder will not use your main function
-  InitLexer("Fraction.jack");
+  InitLexer("EofInStr.jack");
   
   Token nextToken =  GetNextToken();
   while (nextToken.tp != EOFile) {
