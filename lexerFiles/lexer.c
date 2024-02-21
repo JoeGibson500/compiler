@@ -84,7 +84,7 @@ bool isReservedWord(char* string) {
   return false;
 }
 
-int skipWhiteSpaceAndComment(Token token) {
+int skipWhiteSpaceAndComment(Token *token) {
     int character;
     character = getc(file);
     while (character != EOF && isspace(character)) {
@@ -128,9 +128,9 @@ int skipWhiteSpaceAndComment(Token token) {
                 prev_char = character; // Update the previous character after processing the current character
             }
             if (character == EOF) {
-                token.ec = EofInCom;
-                token.tp = ERR;
-                strcpy(token.lx, "Error: unexpected eof in comment");
+                token->ec = EofInCom;
+                printf("SHOUGDJDBSISD");
+                strcpy(token->lx, "Error: unexpected eof in comment");
                 return character; // EOF encountered during multi-line comment
             }
         } else {
@@ -148,16 +148,21 @@ Token generateToken() {
     
     strcpy(token.fl, fileName);
     token.tp = ERR;
+    token.ec = 50;
+    // printf("token.ec before is %d\n", token.ec);
 
-    int character = skipWhiteSpaceAndComment(token);
+    int character = skipWhiteSpaceAndComment(&token);
 
-    if (token.tp == ERR && token.ec == EofInCom) {
+    if (token.ec == EofInCom) {
         // Error handling for unexpected EOF in comment
         // Since skipWhiteSpaceAndComment already set the token.lexeme, just return the token
         strcpy(token.lx, "Error: unexpected eof in comment");
-
+        token.tp = ERR;
+        
+        printf("token.ec in if statement = %d\n", token.ec);
         token.ln = lineNumber;
         return token;
+
     } else if (character == EOF) {
         // Handle normal EOF
         token.tp = EOFile;
@@ -274,16 +279,16 @@ int StopLexer() {
 int main () {
 	// implement your main function here
   // NOTE: the autograder will not use your main function
-  InitLexer("EofInComment.jack");
+  InitLexer("EOFInComment.jack");
   
   Token nextToken =  GetNextToken();
-  while (nextToken.tp != ERR) {
+//   while (nextToken.tp != ERR) {
 //   for (int i=0; i< 152; i++) {
     printf("< %s, %d, %s, %u >\n", nextToken.fl, nextToken.ln, nextToken.lx, nextToken.tp );
-    nextToken = GetNextToken();
-  }
-  nextToken = GetNextToken();
-  printf("< %s, %d, %s, %u >\n", nextToken.fl, nextToken.ln, nextToken.lx, nextToken.tp );
+    // nextToken = GetNextToken();
+//   }
+//   nextToken = GetNextToken();
+//   printf("< %s, %d, %s, %u >\n", nextToken.fl, nextToken.ln, nextToken.lx, nextToken.tp );
 }
 // do not remove the next line
 #endif
