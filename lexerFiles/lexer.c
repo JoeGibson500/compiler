@@ -85,6 +85,7 @@ bool isReservedWord(char* string) {
 }
 
 int skipWhiteSpaceAndComment(Token *token) {
+    
     int character;
     character = getc(file);
     while (character != EOF && isspace(character)) {
@@ -119,12 +120,12 @@ int skipWhiteSpaceAndComment(Token *token) {
                     character = getc(file); // Peek the next character after the closing '/'
                     if (character == '\n') {
                         lineNumber++; // Increment if the next character is a newline
-                    } 
-                    ungetc(character, file);
-                    // Exit the comment and handle any following content
-                    return skipWhiteSpaceAndComment(token);
-                } else if (character == '\n') {
-                    lineNumber++;
+                        return skipWhiteSpaceAndComment(token);
+                    } else {
+                        ungetc(character, file);
+                        // Exit the comment and handle any following content
+                        return skipWhiteSpaceAndComment(token);
+                    }
                 }
                 prev_char = character; // Update the previous character after processing the current character
             }
@@ -282,7 +283,7 @@ int StopLexer() {
 int main () {
 	// implement your main function here
   // NOTE: the autograder will not use your main function
-  InitLexer("OnlyComments.jack");
+  InitLexer("Fraction.jack");
   
   Token nextToken =  GetNextToken();
   while (nextToken.tp != EOFile) {
