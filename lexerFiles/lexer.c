@@ -119,7 +119,7 @@ int skipWhiteSpaceAndComment(Token token) {
                     character = getc(file); // Peek the next character after the closing '/'
                     if (character == '\n') {
                         lineNumber++; // Increment if the next character is a newline
-                    }
+                    } 
                     // Exit the comment and handle any following content
                     return skipWhiteSpaceAndComment(token);
                 } else if (character == '\n') {
@@ -130,6 +130,7 @@ int skipWhiteSpaceAndComment(Token token) {
             if (character == EOF) {
                 token.ec = EofInCom;
                 token.tp = ERR;
+                strcpy(token.lx, "Error: unexpected eof in comment");
                 return character; // EOF encountered during multi-line comment
             }
         } else {
@@ -149,9 +150,16 @@ Token generateToken() {
     token.tp = ERR;
 
     int character = skipWhiteSpaceAndComment(token);
-    // printf("character = %c\n", character);
-    if (character == EOF) {
-        // printf("EOFile character reached.");
+
+    if (token.tp == ERR && token.ec == EofInCom) {
+        // Error handling for unexpected EOF in comment
+        // Since skipWhiteSpaceAndComment already set the token.lexeme, just return the token
+        strcpy(token.lx, "Error: unexpected eof in comment");
+
+        token.ln = lineNumber;
+        return token;
+    } else if (character == EOF) {
+        // Handle normal EOF
         token.tp = EOFile;
         strcpy(token.lx, "End of File");
         token.ln = lineNumber;
@@ -206,6 +214,7 @@ Token generateToken() {
         }
         if(character == EOF) {
             token.ec = EofInStr;
+            printf("test");
             strcpy(token.lx, "Error: unexpected eof in string constant");
             token.tp = ERR;
             return token;
@@ -227,6 +236,7 @@ Token generateToken() {
         return token;
     } else {
         token.ec = IllSym;
+        token.ln = lineNumber;
         strcpy(token.lx, "Error: illegal symbol in source file");
         return token;
     }
@@ -264,10 +274,10 @@ int StopLexer() {
 int main () {
 	// implement your main function here
   // NOTE: the autograder will not use your main function
-  InitLexer("IllegalSymbol.jack");
+  InitLexer("EofInComment.jack");
   
   Token nextToken =  GetNextToken();
-  while (nextToken.tp != EOFile) {
+  while (nextToken.tp != ERR) {
 //   for (int i=0; i< 152; i++) {
     printf("< %s, %d, %s, %u >\n", nextToken.fl, nextToken.ln, nextToken.lx, nextToken.tp );
     nextToken = GetNextToken();
