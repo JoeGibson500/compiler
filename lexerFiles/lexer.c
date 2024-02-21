@@ -214,6 +214,7 @@ Token generateToken() {
                 token.ec = NewLnInStr;
                 strcpy(token.lx, "Error: new line in string constant");
                 token.tp = ERR;
+                return token;
             }
             if(character == EOF) {
                 token.ec = EofInStr;
@@ -223,12 +224,7 @@ Token generateToken() {
                 return token;
             }
         }
-        // if(character == EOF) {
-        //     token.ec = EofInStr;
-        //     strcpy(token.lx, "Error: unexpected eof in string constant");
-        //     token.tp = ERR;
-        //     return token;
-        // }
+
         tempCharacters[i] = '\0';
         // character = ungetc(character, file);
 
@@ -284,7 +280,7 @@ int StopLexer() {
 int main () {
 	// implement your main function here
   // NOTE: the autograder will not use your main function
-  InitLexer("EofInStr.jack");
+  InitLexer("NewLineInStr.jack");
   
   Token nextToken =  GetNextToken();
   while (nextToken.tp != EOFile) {
