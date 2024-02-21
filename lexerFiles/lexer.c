@@ -120,6 +120,7 @@ int skipWhiteSpaceAndComment(Token *token) {
                     if (character == '\n') {
                         lineNumber++; // Increment if the next character is a newline
                     } 
+                    ungetc(character, file);
                     // Exit the comment and handle any following content
                     return skipWhiteSpaceAndComment(token);
                 } else if (character == '\n') {
@@ -132,6 +133,7 @@ int skipWhiteSpaceAndComment(Token *token) {
                 strcpy(token->lx, "Error: unexpected eof in comment");
                 return character; // EOF encountered during multi-line comment
             }
+        
         } else {
             // Not a comment, return the '/' and the next character to be processed
             ungetc(character, file); // Put back the character after '/'
@@ -280,7 +282,7 @@ int StopLexer() {
 int main () {
 	// implement your main function here
   // NOTE: the autograder will not use your main function
-  InitLexer("NewLineInStr.jack");
+  InitLexer("OnlyComments.jack");
   
   Token nextToken =  GetNextToken();
   while (nextToken.tp != EOFile) {
