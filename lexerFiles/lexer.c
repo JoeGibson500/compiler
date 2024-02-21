@@ -225,7 +225,7 @@ Token generateToken() {
             return token;
         }
         tempCharacters[i] = '\0';
-        character = ungetc(character, file);
+        // character = ungetc(character, file);
 
         strcpy(token.lx, tempCharacters);
         token.tp = STRING;
@@ -279,16 +279,15 @@ int StopLexer() {
 int main () {
 	// implement your main function here
   // NOTE: the autograder will not use your main function
-  InitLexer("EOFInComment.jack");
+  InitLexer("Fraction.jack");
   
   Token nextToken =  GetNextToken();
-//   while (nextToken.tp != ERR) {
-//   for (int i=0; i< 152; i++) {
+  while (nextToken.tp != EOFile) {
     printf("< %s, %d, %s, %u >\n", nextToken.fl, nextToken.ln, nextToken.lx, nextToken.tp );
-    // nextToken = GetNextToken();
-//   }
-//   nextToken = GetNextToken();
-//   printf("< %s, %d, %s, %u >\n", nextToken.fl, nextToken.ln, nextToken.lx, nextToken.tp );
+    nextToken = GetNextToken();
+  }
+  nextToken = GetNextToken();
+  printf("< %s, %d, %s, %u >\n", nextToken.fl, nextToken.ln, nextToken.lx, nextToken.tp );
 }
 // do not remove the next line
 #endif
