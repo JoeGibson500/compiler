@@ -21,19 +21,22 @@ Date Work Commenced: 08/02/2024
 #include <ctype.h>
 #include "lexer.h"
 #include <stdbool.h>
+#define NUMSYMBOLS 19
 #define NUMRESWORDS 21
 #define MAXTOKENS 2000
 
 
 // YOU CAN ADD YOUR OWN FUNCTIONS, DECLARATIONS AND VARIABLES HERE
 
-
+// List of JACK reserved words
 const char* resWords[] = {"class", "constructor", "method", "function", /* Program components */
                           "int", "boolean", "char", "void", /* Primitive types */
                           "var", "static", "field", /* Variable declarations */
                           "let", "do", "if", "else", "while", "return", /* Statements */ 
                           "true", "false", "null", /* Constant values */
                           "this"}; /* Class Membership */
+
+// List of JACK symbols
 const char symbols[19] = {
     '(', ')', '[', ']', '{', '}',
     ',', ';', '=', '.',
@@ -41,7 +44,6 @@ const char symbols[19] = {
 };
 
 char* fileName;
-
 FILE* file;
 int tokenReady;
 Token token;
@@ -49,24 +51,24 @@ int lineNumber;
 
 
 int InitLexer(char* file_name) {
-
-
+    
     file = fopen(file_name, "r");
+    
     if(!file) {
         return 0;
     } 
 
     fileName = file_name;
   
-  tokenReady = 0;
-  lineNumber = 1;
+    tokenReady = 0;
+    lineNumber = 1;
 
-  return 1;
+    return 1;
 }
 
 bool isSymbol(char character) {
-    int numSymbols = sizeof(symbols) / sizeof(symbols[0]);
-    for(int i = 0; i < numSymbols; i++) {
+    
+    for(int i = 0; i < NUMSYMBOLS; i++) {
         if (character == symbols[i]) { 
             return true;
         }
@@ -84,175 +86,226 @@ bool isReservedWord(char* string) {
   return false;
 }
 
+// Recursive function to skip to the next token
 int skipWhiteSpaceAndComment(Token *token) {
     
     int character;
     character = getc(file);
+    
+    // Skip whitespace
     while (character != EOF && isspace(character)) {
-        if (character == '\n') {
-            lineNumber++;
-        }
-        character = getc(file);
-    } // hit a non-space character
 
-    if (character == '/') {
+        if (character == '\n') {
+
+            lineNumber++;
+
+        }
+
         character = getc(file);
-        if (character == '/') {
-            // Single-line comment
+
+    } 
+
+    // Encountered a non-whitespace character
+    if (character == '/') {
+
+        character = getc(file);
+
+        if (character == '/') { // Single-line comment
+
             while (character != EOF && character != '\n') {
+
                 character = getc(file);
+
             }
             if (character == '\n') {
+
                 lineNumber++;
+
             }
             if (character == EOF) {
-                return character; // EOF encountered during single-line comment
+
+                return character; 
+
             }
-            // After a single-line comment, we continue to skip whitespace/comments
+            
+            //continue to skip
             return skipWhiteSpaceAndComment(token);
-        } else if (character == '*') {
-            // Multi-line comment
+
+        } else if (character == '*') { // Multi-line comment
+           
             int prev_char = 0;
-            while (character != EOF) {
-                character = getc(file); // Read the next character first to correctly handle characters after '*'
-                // Check for the end of the comment
-                if (prev_char == '*' && character == '/') {
-                    character = getc(file); // Peek the next character after the closing '/'
+
+            while (character != EOF) { // Skip past characters in comment
+
+                character = getc(file); 
+                
+                if (prev_char == '*' && character == '/') { // End of comment reached
+
+                    character = getc(file); // Peek at the character after end of comment
                     if (character == '\n') {
-                        lineNumber++; // Increment if the next character is a newline
+
+                        lineNumber++; 
                         return skipWhiteSpaceAndComment(token);
+
                     } else {
+
                         ungetc(character, file);
-                        // Exit the comment and handle any following content
                         return skipWhiteSpaceAndComment(token);
+
                     }
+
                 } else if (character == '\n') {
+
                     lineNumber++;
+
                 }
 
-
-
-
-                prev_char = character; // Update the previous character after processing the current character
+                prev_char = character; // Update the previous character
             }
             if (character == EOF) {
+
                 token->ec = EofInCom;
                 strcpy(token->lx, "Error: unexpected eof in comment");
                 return character; // EOF encountered during multi-line comment
+
             }
         
-        } else {
-            // Not a comment, return the '/' and the next character to be processed
-            ungetc(character, file); // Put back the character after '/'
-            return '/'; // Return '/' to indicate it's not part of a comment
+        } else { 
+            
+            ungetc(character, file); 
+            return '/'; 
+
         }
     }
-    // If the character is not a '/' or after processing comments, return the character
+
+    // Non-whitespace or comment character encountered 
     return character;
 }
 
-
 Token generateToken() {
     
+    // Initial token 
     strcpy(token.fl, fileName);
     token.tp = ERR;
     token.ec = 50;
-    // printf("token.ec before is %d\n", token.ec);
 
     int character = skipWhiteSpaceAndComment(&token);
     
-    if (token.ec == EofInCom) {
-        // Error handling for unexpected EOF in comment
-        // Since skipWhiteSpaceAndComment already set the token.lexeme, just return the token
-        strcpy(token.lx, "Error: unexpected eof in comment");
+    if (token.ec == EofInCom) { // Error EOF
+        
         token.tp = ERR;
+        strcpy(token.lx, "Error: unexpected eof in comment");
         token.ln = lineNumber;
         return token;
 
-    } else if (character == EOF) {
-        // Handle normal EOF
+    } else if (character == EOF) { // Normal EOF 
+
         token.tp = EOFile;
         strcpy(token.lx, "End of File");
         token.ln = lineNumber;
         return token;
+
     }
 
     int i = 0;
-    char tempCharacters[128];
-    if (isalpha(character) || character == '_') {
+    char tempCharacters[128]; 
 
-        while(character != EOF && (isalnum(character) || character == '_')) {
+    if (isalpha(character) || character == '_') { // Identifier or Reserved token 
+
+        while(character != EOF && (isalnum(character) || character == '_')) { // Identifiers can contain digits and _
+
             tempCharacters[i++] = character;
             character = getc(file);
 
         }
+        character = ungetc(character, file);    
+        
         tempCharacters[i] = '\0';
-        character = ungetc(character, file);
-
         strcpy(token.lx, tempCharacters);
-        if (isReservedWord(tempCharacters)) {
+
+        if (isReservedWord(tempCharacters)) { // Distinguish between Resword or ID 
+        
             token.tp = RESWORD;
+
         } else {
+
             token.tp = ID;
+
         }
+
         token.ln = lineNumber;
         return token;
 
-    } else if (isdigit(character)) {
+    } else if (isdigit(character)) { // INT token
+        
         while(character != EOF && isdigit(character)) {
+            
             tempCharacters[i++] = character;
             character = getc(file);
+
         }
+
         tempCharacters[i] = '\0';
+        strcpy(token.lx, tempCharacters);
+
         character = ungetc(character, file);
 
-        strcpy(token.lx, tempCharacters);
         token.tp = INT;
         token.ln = lineNumber;
         return token;        
 
-    } else if (character == '"') {
+    } else if (character == '"') { // String literal token
+        
         character = getc(file);
+
         while(character != EOF && (character != '"')) {
+
             tempCharacters[i++] = character;
             character = getc(file);
 
             if(character == '\n') {
+
                 token.ec = NewLnInStr;
                 strcpy(token.lx, "Error: new line in string constant");
                 token.ln = lineNumber;
                 token.tp = ERR;
                 return token;
+
             }
             if(character == EOF) {
+
                 token.ec = EofInStr;
                 strcpy(token.lx, "Error: unexpected eof in string constant");
                 token.ln = lineNumber;
                 token.tp = ERR;
                 return token;
+
             }
         }
 
         tempCharacters[i] = '\0';
-        // character = ungetc(character, file);
 
         strcpy(token.lx, tempCharacters);
         token.tp = STRING;
         token.ln = lineNumber;
         return token;
 
-    } else if (isSymbol(character)) {
+    } else if (isSymbol(character)) { //Symbol token
+
         tempCharacters[0] = character;
         tempCharacters[1] = '\0';
         strcpy(token.lx, tempCharacters);
         token.tp = SYMBOL;
         token.ln = lineNumber;
         return token;
-    } else {
+
+    } else { // Illegal Symbol token
+        
+        strcpy(token.lx, "Error: illegal symbol in source file");
         token.ec = IllSym;
         token.ln = lineNumber;
-        strcpy(token.lx, "Error: illegal symbol in source file");
         return token;
+
     }
 }
 
@@ -281,7 +334,6 @@ int StopLexer() {
     fclose(file);
     return 0;
 }
-
 
 // do not remove the next line
 #ifndef TEST
