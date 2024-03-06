@@ -1,0 +1,362 @@
+	$$$ Checking your lexer, behold $$$
+	=========================================
+Started ...
+
+Testing your parser on various source files (1 mark each)
+File Main.jack 
+Class found
+Identifier found
+Curly brace found
+memberVar peeked
+Subroutine declaration keyword found
+Return type found = void
+Identifier found
+opening bracket found
+illegal paramater
+Member declaration not found
+Member declaration not found
+pi->er = 6** Oops: your parser returned the following info:
+error type: class member declaration must begin with static, field, constructor , function , or method, line: 8,token: ), 
+It should have returned:
+none
+Sorry, -1 mark
+File Ball.jack 
+Class found
+Identifier found
+Curly brace found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = x
+Identifier found = y
+Semi-colon found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = lengthx
+Identifier found = lengthy
+Semi-colon found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = d
+Identifier found = straightD
+Identifier found = diagonalD
+Semi-colon found
+Closing brace not found
+pi->er = 5** Oops: your parser returned the following info:
+error type: } expected, line: 17,token: field, 
+It should have returned:
+none
+Sorry, -1 mark
+File Fraction.jack 
+Class found
+Identifier found
+Curly brace found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = numerator
+Identifier found = denominator
+Semi-colon found
+memberVar peeked
+Subroutine declaration keyword found
+Return type not found
+Member declaration not found
+pi->er = 6** Oops: your parser returned the following info:
+error type: class member declaration must begin with static, field, constructor , function , or method, line: 11,token: Fraction, 
+It should have returned:
+none
+Sorry, -1 mark
+File List.jack 
+Class found
+Identifier found
+Curly brace found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = data
+Semi-colon found
+classVar peeked
+Variable declaration keyword found
+Member declaration not found
+pi->er = 6** Oops: your parser returned the following info:
+error type: class member declaration must begin with static, field, constructor , function , or method, line: 9,token: next, 
+It should have returned:
+none
+Sorry, -1 mark
+File Square.jack 
+Class found
+Identifier found
+Curly brace found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = x
+Identifier found = y
+Semi-colon found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = size
+Semi-colon found
+memberVar peeked
+Subroutine declaration keyword found
+Return type not found
+pi->er = 8** Oops: your parser returned the following info:
+error type: a type must be int, char, boolean, or identifier, line: 13,token: Square, 
+It should have returned:
+none
+Sorry, -1 mark
+File SquareGame.jack 
+Class found
+Identifier found
+Curly brace found
+classVar peeked
+Variable declaration keyword found
+Member declaration not found
+Member declaration not found
+pi->er = 6** Oops: your parser returned the following info:
+error type: class member declaration must begin with static, field, constructor , function , or method, line: 18,token: square, 
+It should have returned:
+none
+Sorry, -1 mark
+File classExpected.jack 
+Class not found
+pi->er = 2	PASSED
+File closeBracketExpected.jack 
+Class found
+Identifier found
+Curly brace found
+memberVar peeked
+Subroutine declaration keyword found
+Return type found = void
+Identifier found
+opening bracket found
+illegal paramater
+Member declaration not found
+Member declaration not found
+pi->er = 6** Oops: your parser returned the following info:
+error type: class member declaration must begin with static, field, constructor , function , or method, line: 8,token: ), 
+It should have returned:
+error type: ] expected, line: 19,token: ;, 
+Sorry, -1 mark
+File closeParenExpected.jack 
+Class found
+Identifier found
+Curly brace found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = data
+Semi-colon found
+classVar peeked
+Variable declaration keyword found
+Member declaration not found
+pi->er = 6** Oops: your parser returned the following info:
+error type: class member declaration must begin with static, field, constructor , function , or method, line: 9,token: next, 
+It should have returned:
+error type: ) expected, line: 19,token: {, 
+Sorry, -1 mark
+File closeParenExpected1.jack 
+Class found
+Identifier found
+Curly brace found
+classVar peeked
+Variable declaration keyword found
+Member declaration not found
+Member declaration not found
+pi->er = 6** Oops: your parser returned the following info:
+error type: class member declaration must begin with static, field, constructor , function , or method, line: 18,token: square, 
+It should have returned:
+error type: ) expected, line: 43,token: ;, 
+Sorry, -1 mark
+File equalExpected.jack 
+Class found
+Identifier found
+Curly brace found
+classVar peeked
+Variable declaration keyword found
+Member declaration not found
+Member declaration not found
+pi->er = 6** Oops: your parser returned the following info:
+error type: class member declaration must begin with static, field, constructor , function , or method, line: 18,token: square, 
+It should have returned:
+error type: = expected, line: 27,token: 0, 
+Sorry, -1 mark
+File idExpected.jack 
+Class found
+Identifier not found
+pi->er = 3	PASSED
+File idExpected2.jack 
+Class found
+Identifier found
+Curly brace found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = x
+Identifier found = y
+Semi-colon found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = lengthx
+Identifier found = lengthy
+Semi-colon found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = d
+Identifier found = straightD
+Identifier found = diagonalD
+Semi-colon found
+Closing brace not found
+pi->er = 5** Oops: your parser returned the following info:
+error type: } expected, line: 17,token: field, 
+It should have returned:
+error type: identifier expected, line: 59,token: ., 
+Sorry, -1 mark
+File openBraceExpected.jack 
+Class found
+Identifier found
+Curly brace not found
+pi->er = 4	PASSED
+File openParenExpected.jack 
+Class found
+Identifier found
+Curly brace found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = x
+Identifier found = y
+Semi-colon found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = lengthx
+Identifier found = lengthy
+Semi-colon found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = d
+Identifier found = straightD
+Identifier found = diagonalD
+Semi-colon found
+Closing brace not found
+pi->er = 5** Oops: your parser returned the following info:
+error type: } expected, line: 17,token: field, 
+It should have returned:
+error type: ( expected, line: 52,token: false, 
+Sorry, -1 mark
+File semicolonExpected.jack 
+Class found
+Identifier found
+Curly brace found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = numerator
+Identifier found = denominator
+Semi-colon found
+memberVar peeked
+Subroutine declaration keyword found
+Return type not found
+Member declaration not found
+pi->er = 6** Oops: your parser returned the following info:
+error type: class member declaration must begin with static, field, constructor , function , or method, line: 11,token: Fraction, 
+It should have returned:
+error type: ; expected, line: 27,token: }, 
+Sorry, -1 mark
+File syntaxError.jack 
+Class found
+Identifier found
+Curly brace found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = x
+Identifier found = y
+Semi-colon found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = lengthx
+Identifier found = lengthy
+Semi-colon found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = d
+Identifier found = straightD
+Identifier found = diagonalD
+Semi-colon found
+Closing brace not found
+pi->er = 5** Oops: your parser returned the following info:
+error type: } expected, line: 17,token: field, 
+It should have returned:
+error type: ) expected, line: 96,token: dx, 
+Sorry, -1 mark
+File syntaxError1.jack 
+Class found
+Identifier found
+Curly brace found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = numerator
+Identifier found = denominator
+Semi-colon found
+memberVar peeked
+Subroutine declaration keyword found
+Return type not found
+Member declaration not found
+pi->er = 6** Oops: your parser returned the following info:
+error type: class member declaration must begin with static, field, constructor , function , or method, line: 11,token: Fraction, 
+It should have returned:
+error type: syntax error, line: 61,token: ;, 
+Sorry, -1 mark
+File syntaxError2.jack 
+Class found
+Identifier found
+Curly brace found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = x
+Identifier found = y
+Semi-colon found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = lengthx
+Identifier found = lengthy
+Semi-colon found
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = d
+Identifier found = straightD
+Identifier found = diagonalD
+Semi-colon found
+Closing brace not found
+pi->er = 5** Oops: your parser returned the following info:
+error type: } expected, line: 17,token: field, 
+It should have returned:
+error type: ; expected, line: 91,token: ), 
+Sorry, -1 mark
+File NewLineInStr.jack 
+Class not found
+pi->er = 2** Oops: your parser returned the following info:
+error type: keyword class expected, line: 1,token: Error: new line in string constant, 
+It should have returned:
+error type: lexer error, line: 1,token: , 
+Sorry, -1 mark
+
+---------------------------------------------------
+		Total mark = 3/20
+---------------------------------------------------
+
+Finished

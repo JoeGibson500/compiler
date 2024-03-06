@@ -1,0 +1,11 @@
+class Variable {
+    
+field int x, y, z;
+field int size;
+
+
+constructor int new(int x) {
+
+//    var char key, bum, weiner;
+    let x =  
+}

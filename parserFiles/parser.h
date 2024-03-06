@@ -5,10 +5,10 @@
 
 // syntax errors which my be encountered by the parser
 typedef enum {
-	none,					// no errors
-	lexerErr,				// lexer error (if the lexer returns an error)
-	classExpected,			// keyword class expected
-	idExpected,				// identifier expected
+	none,					// no errors 
+	lexerErr,				// lexer error (if the lexer returns an error) 
+	classExpected,			// keyword class expected (DONE)
+	idExpected,				// identifier expected 
 	openBraceExpected,		// { expected
 	closeBraceExpected,		// } expected
 	memberDeclarErr,		// class member declaration must begin with static, field, constructor , function , or method
