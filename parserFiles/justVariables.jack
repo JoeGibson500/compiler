@@ -7,5 +7,5 @@ field int size;
 constructor int new(int x) {
 
 //    var char key, bum, weiner;
-    let x =  
+    let x = 1234;
 }

@@ -340,7 +340,7 @@ int StopLexer() {
 int main () {
 	// implement your main function here
   // NOTE: the autograder will not use your main function
-  InitLexer("Ball.jack");
+  InitLexer("Fraction.jack");
   
   Token nextToken =  GetNextToken();
   while (nextToken.tp != EOFile) {
