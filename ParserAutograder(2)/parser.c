@@ -54,7 +54,7 @@ bool isFactorOrOperand() {
 	} else if (!strcmp(token.lx, "true") || !strcmp(token.lx, "false") || !strcmp(token.lx, "null") || !strcmp(token.lx, "this")) {
 		return true;
 	} else if (token.tp == SYMBOL && !strcmp(token.lx, "(")) {
-		// printf("bracket peeked\n");
+		// //printf("bracket peeked\n");
 		return true;
 		// token = PeekNextToken();
 		// if (isFactorOrOperand()) {
@@ -173,7 +173,7 @@ ParserInfo memberDeclar() {
 		//printf("classVar peeked\n");
 		pi = classVarDeclar();
 	} else if ((token.tp == RESWORD) && (!strcmp(token.lx, "function") || !strcmp(token.lx, "constructor") || !strcmp(token.lx, "method"))) {
-		//printf("memberVar peeked\n");
+		//printf("subroutineDeclar peeked\n");
 		pi = subroutineDeclar();
 	} else {
 		//printf("Member declaration not found\n");
@@ -264,9 +264,13 @@ ParserInfo type() {
 
 	// Eat type reserved word
 	token = GetNextToken();
-	if (token.tp == RESWORD && (!strcmp(token.lx, "int") | !strcmp(token.lx, "char") | !strcmp(token.lx, "boolean") | !strcmp(token.lx, "identifier"))) {
+	if (!strcmp(token.lx, "int") || !strcmp(token.lx, "char") || !strcmp(token.lx, "boolean")) {
 		//printf("Variable type found\n");
-	} else {
+	} else if (token.tp == ID) {
+		//printf("CONSTRUCTOR IDENTIFIER FOUND !!!");
+	}
+	 else {
+		//printf("Illegal type\n!");
 		pi.er = illegalType;
 		pi.tk = token;
 	}
@@ -292,15 +296,12 @@ ParserInfo subroutineDeclar() {
 	}
 
 	token = PeekNextToken();
-	if (token.tp == RESWORD) {
-		if(!strcmp(token.lx, "void")) {
-			token = GetNextToken();
-			//printf("Return type found = void\n");
-		} else {
-			pi = type();
-			//printf("Return type found = %s\n", token.lx);
-
-		}
+	if(!strcmp(token.lx, "void")) {
+		token = GetNextToken();
+		//printf("Return type found = void\n");
+	} else if (token.tp == ID) {
+		pi = type();
+		//printf("Return type found = %s\n", token.lx);
 	} else {
 		//printf("Return type not found = %s\n", token.lx);
 		// idk the error
@@ -388,7 +389,7 @@ ParserInfo paramList() {
 	if (token.tp == RESWORD) {
 		pi = type();
 	} else {
-		//printf("Type expected");
+		//printf("Type expected\n");
 		pi.er = illegalType;
 		pi.tk = token;
 	}
@@ -435,6 +436,8 @@ ParserInfo paramList() {
 			pi.er = idExpected;
 			pi.tk = token;
 		}
+
+		token = PeekNextToken();
 	}
 
 	return pi;
@@ -1349,7 +1352,7 @@ ParserInfo Parse ()
 	pi.er = none;
 
 	classDeclar();
-	// printf("pi.er = %u", pi.er);
+	printf("pi.er = %u", pi.er);
 	if (pi.er != none) {
 		return pi;
 	}

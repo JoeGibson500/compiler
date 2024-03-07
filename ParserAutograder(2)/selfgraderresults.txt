@@ -4,116 +4,104 @@ Started ...
 
 Testing your parser on various source files (1 mark each)
 File Main.jack 
-** Oops: your parser returned the following info:
+pi.er = 8** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 9,token: Array, 
 It should have returned:
 none
 Sorry, -1 mark
 File Ball.jack 
-** Oops: your parser returned the following info:
-error type: a type must be int, char, boolean, or identifier, line: 24,token: Ball, 
+pi.er = 8** Oops: your parser returned the following info:
+error type: a type must be int, char, boolean, or identifier, line: 64,token: int, 
 It should have returned:
 none
 Sorry, -1 mark
 File Fraction.jack 
-** Oops: your parser returned the following info:
-error type: a type must be int, char, boolean, or identifier, line: 11,token: Fraction, 
+pi.er = 8** Oops: your parser returned the following info:
+error type: a type must be int, char, boolean, or identifier, line: 30,token: int, 
 It should have returned:
 none
 Sorry, -1 mark
 File List.jack 
-** Oops: your parser returned the following info:
+pi.er = 8** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 9,token: List, 
 It should have returned:
 none
 Sorry, -1 mark
 File Square.jack 
-** Oops: your parser returned the following info:
-error type: a type must be int, char, boolean, or identifier, line: 13,token: Square, 
-It should have returned:
-none
-Sorry, -1 mark
+pi.er = 0	PASSED
 File SquareGame.jack 
-** Oops: your parser returned the following info:
+pi.er = 8** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 18,token: Square, 
 It should have returned:
 none
 Sorry, -1 mark
 File classExpected.jack 
-	PASSED
+pi.er = 2	PASSED
 File closeBracketExpected.jack 
-** Oops: your parser returned the following info:
+pi.er = 8** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 9,token: Array, 
 It should have returned:
 error type: ] expected, line: 19,token: ;, 
 Sorry, -1 mark
 File closeParenExpected.jack 
-** Oops: your parser returned the following info:
+pi.er = 8** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 9,token: List, 
 It should have returned:
 error type: ) expected, line: 19,token: {, 
 Sorry, -1 mark
 File closeParenExpected1.jack 
-** Oops: your parser returned the following info:
+pi.er = 8** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 18,token: Square, 
 It should have returned:
 error type: ) expected, line: 43,token: ;, 
 Sorry, -1 mark
 File equalExpected.jack 
-** Oops: your parser returned the following info:
+pi.er = 8** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 18,token: Square, 
 It should have returned:
 error type: = expected, line: 27,token: 0, 
 Sorry, -1 mark
 File idExpected.jack 
-	PASSED
+pi.er = 3	PASSED
 File idExpected2.jack 
-** Oops: your parser returned the following info:
-error type: a type must be int, char, boolean, or identifier, line: 24,token: Ball, 
-It should have returned:
-error type: identifier expected, line: 59,token: ., 
-Sorry, -1 mark
+pi.er = 3	PASSED
 File openBraceExpected.jack 
-	PASSED
+pi.er = 4	PASSED
 File openParenExpected.jack 
-** Oops: your parser returned the following info:
-error type: a type must be int, char, boolean, or identifier, line: 24,token: Ball, 
+pi.er = 8** Oops: your parser returned the following info:
+error type: a type must be int, char, boolean, or identifier, line: 64,token: int, 
 It should have returned:
 error type: ( expected, line: 52,token: false, 
 Sorry, -1 mark
 File semicolonExpected.jack 
-** Oops: your parser returned the following info:
-error type: a type must be int, char, boolean, or identifier, line: 11,token: Fraction, 
-It should have returned:
-error type: ; expected, line: 27,token: }, 
-Sorry, -1 mark
+pi.er = 9	PASSED
 File syntaxError.jack 
-** Oops: your parser returned the following info:
-error type: a type must be int, char, boolean, or identifier, line: 24,token: Ball, 
+pi.er = 8** Oops: your parser returned the following info:
+error type: a type must be int, char, boolean, or identifier, line: 64,token: int, 
 It should have returned:
 error type: ) expected, line: 96,token: dx, 
 Sorry, -1 mark
 File syntaxError1.jack 
-** Oops: your parser returned the following info:
-error type: a type must be int, char, boolean, or identifier, line: 11,token: Fraction, 
+pi.er = 8** Oops: your parser returned the following info:
+error type: a type must be int, char, boolean, or identifier, line: 30,token: int, 
 It should have returned:
 error type: syntax error, line: 61,token: ;, 
 Sorry, -1 mark
 File syntaxError2.jack 
-** Oops: your parser returned the following info:
-error type: a type must be int, char, boolean, or identifier, line: 24,token: Ball, 
+pi.er = 8** Oops: your parser returned the following info:
+error type: a type must be int, char, boolean, or identifier, line: 64,token: int, 
 It should have returned:
 error type: ; expected, line: 91,token: ), 
 Sorry, -1 mark
 File NewLineInStr.jack 
-** Oops: your parser returned the following info:
+pi.er = 2** Oops: your parser returned the following info:
 error type: keyword class expected, line: 1,token: Error: new line in string constant, 
 It should have returned:
 error type: lexer error, line: 1,token: , 
 Sorry, -1 mark
 
 ---------------------------------------------------
-		Total mark = 3/20
+		Total mark = 6/20
 ---------------------------------------------------
 
 Finished
