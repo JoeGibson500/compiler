@@ -1352,7 +1352,7 @@ ParserInfo Parse ()
 	pi.er = none;
 
 	classDeclar();
-	printf("pi.er = %u", pi.er);
+	// //printf("pi.er = %u", pi.er);
 	if (pi.er != none) {
 		return pi;
 	}

@@ -4,561 +4,109 @@ Started ...
 
 Testing your parser on various source files (1 mark each)
 File Main.jack 
-Class found
-Identifier found
-Curly brace found
-MEMBER DECLAR PEEKED ***********;
-token = function
-memberVar peeked
-Subroutine declaration keyword found
-Return type found = void
-Identifier found
-opening bracket found
-closing bracket found
-Peeked subroutineBody
-Curly brace found
-Statement peeked
-Variable declaration statement peeked
-Variable declaration eatenpi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 9,token: Array, 
 It should have returned:
 none
 Sorry, -1 mark
 File Ball.jack 
-Class found
-Identifier found
-Curly brace found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = x
-Identifier found = y
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = lengthx
-Identifier found = lengthy
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = d
-Identifier found = straightD
-Identifier found = diagonalD
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = invert
-Identifier found = positivex
-Identifier found = positivey
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = leftWall
-Identifier found = rightWall
-Identifier found = topWall
-Identifier found = bottomWall
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = wall
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = constructor
-memberVar peeked
-Subroutine declaration keyword found
-Return type not found = Ball
-pi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 24,token: Ball, 
 It should have returned:
 none
 Sorry, -1 mark
 File Fraction.jack 
-Class found
-Identifier found
-Curly brace found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = numerator
-Identifier found = denominator
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = constructor
-memberVar peeked
-Subroutine declaration keyword found
-Return type not found = Fraction
-pi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 11,token: Fraction, 
 It should have returned:
 none
 Sorry, -1 mark
 File List.jack 
-Class found
-Identifier found
-Curly brace found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = data
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-pi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 9,token: List, 
 It should have returned:
 none
 Sorry, -1 mark
 File Square.jack 
-Class found
-Identifier found
-Curly brace found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = x
-Identifier found = y
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = size
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = constructor
-memberVar peeked
-Subroutine declaration keyword found
-Return type not found = Square
-pi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 13,token: Square, 
 It should have returned:
 none
 Sorry, -1 mark
 File SquareGame.jack 
-Class found
-Identifier found
-Curly brace found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-pi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 18,token: Square, 
 It should have returned:
 none
 Sorry, -1 mark
 File classExpected.jack 
-Class not found
-pi.er = 2	PASSED
+	PASSED
 File closeBracketExpected.jack 
-Class found
-Identifier found
-Curly brace found
-MEMBER DECLAR PEEKED ***********;
-token = function
-memberVar peeked
-Subroutine declaration keyword found
-Return type found = void
-Identifier found
-opening bracket found
-closing bracket found
-Peeked subroutineBody
-Curly brace found
-Statement peeked
-Variable declaration statement peeked
-Variable declaration eatenpi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 9,token: Array, 
 It should have returned:
 error type: ] expected, line: 19,token: ;, 
 Sorry, -1 mark
 File closeParenExpected.jack 
-Class found
-Identifier found
-Curly brace found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = data
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-pi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 9,token: List, 
 It should have returned:
 error type: ) expected, line: 19,token: {, 
 Sorry, -1 mark
 File closeParenExpected1.jack 
-Class found
-Identifier found
-Curly brace found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-pi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 18,token: Square, 
 It should have returned:
 error type: ) expected, line: 43,token: ;, 
 Sorry, -1 mark
 File equalExpected.jack 
-Class found
-Identifier found
-Curly brace found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-pi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 18,token: Square, 
 It should have returned:
 error type: = expected, line: 27,token: 0, 
 Sorry, -1 mark
 File idExpected.jack 
-Class found
-Identifier not found
-pi.er = 3	PASSED
+	PASSED
 File idExpected2.jack 
-Class found
-Identifier found
-Curly brace found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = x
-Identifier found = y
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = lengthx
-Identifier found = lengthy
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = d
-Identifier found = straightD
-Identifier found = diagonalD
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = invert
-Identifier found = positivex
-Identifier found = positivey
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = leftWall
-Identifier found = rightWall
-Identifier found = topWall
-Identifier found = bottomWall
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = wall
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = constructor
-memberVar peeked
-Subroutine declaration keyword found
-Return type not found = Ball
-pi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 24,token: Ball, 
 It should have returned:
 error type: identifier expected, line: 59,token: ., 
 Sorry, -1 mark
 File openBraceExpected.jack 
-Class found
-Identifier found
-Curly brace not found
-pi.er = 4	PASSED
+	PASSED
 File openParenExpected.jack 
-Class found
-Identifier found
-Curly brace found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = x
-Identifier found = y
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = lengthx
-Identifier found = lengthy
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = d
-Identifier found = straightD
-Identifier found = diagonalD
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = invert
-Identifier found = positivex
-Identifier found = positivey
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = leftWall
-Identifier found = rightWall
-Identifier found = topWall
-Identifier found = bottomWall
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = wall
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = constructor
-memberVar peeked
-Subroutine declaration keyword found
-Return type not found = Ball
-pi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 24,token: Ball, 
 It should have returned:
 error type: ( expected, line: 52,token: false, 
 Sorry, -1 mark
 File semicolonExpected.jack 
-Class found
-Identifier found
-Curly brace found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = numerator
-Identifier found = denominator
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = constructor
-memberVar peeked
-Subroutine declaration keyword found
-Return type not found = Fraction
-pi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 11,token: Fraction, 
 It should have returned:
 error type: ; expected, line: 27,token: }, 
 Sorry, -1 mark
 File syntaxError.jack 
-Class found
-Identifier found
-Curly brace found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = x
-Identifier found = y
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = lengthx
-Identifier found = lengthy
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = d
-Identifier found = straightD
-Identifier found = diagonalD
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = invert
-Identifier found = positivex
-Identifier found = positivey
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = leftWall
-Identifier found = rightWall
-Identifier found = topWall
-Identifier found = bottomWall
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = wall
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = constructor
-memberVar peeked
-Subroutine declaration keyword found
-Return type not found = Ball
-pi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 24,token: Ball, 
 It should have returned:
 error type: ) expected, line: 96,token: dx, 
 Sorry, -1 mark
 File syntaxError1.jack 
-Class found
-Identifier found
-Curly brace found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = numerator
-Identifier found = denominator
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = constructor
-memberVar peeked
-Subroutine declaration keyword found
-Return type not found = Fraction
-pi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 11,token: Fraction, 
 It should have returned:
 error type: syntax error, line: 61,token: ;, 
 Sorry, -1 mark
 File syntaxError2.jack 
-Class found
-Identifier found
-Curly brace found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = x
-Identifier found = y
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = lengthx
-Identifier found = lengthy
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = d
-Identifier found = straightD
-Identifier found = diagonalD
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = invert
-Identifier found = positivex
-Identifier found = positivey
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = leftWall
-Identifier found = rightWall
-Identifier found = topWall
-Identifier found = bottomWall
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = field
-classVar peeked
-Variable declaration keyword found
-Variable type found
-Identifier found = wall
-Semi-colon found
-MEMBER DECLAR PEEKED ***********;
-token = constructor
-memberVar peeked
-Subroutine declaration keyword found
-Return type not found = Ball
-pi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 24,token: Ball, 
 It should have returned:
 error type: ; expected, line: 91,token: ), 
 Sorry, -1 mark
 File NewLineInStr.jack 
-Class not found
-pi.er = 2** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: keyword class expected, line: 1,token: Error: new line in string constant, 
 It should have returned:
 error type: lexer error, line: 1,token: , 
