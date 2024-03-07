@@ -1,0 +1,419 @@
+Class found
+Identifier found
+Curly brace found
+MEMBER DECLAR PEEKED ***********;
+token = field
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = x
+Identifier found = y
+Semi-colon found
+MEMBER DECLAR PEEKED ***********;
+token = field
+classVar peeked
+Variable declaration keyword found
+Variable type found
+Identifier found = size
+Semi-colon found
+MEMBER DECLAR PEEKED ***********;
+token = method
+memberVar peeked
+Subroutine declaration keyword found
+Return type found = void
+Identifier found
+opening bracket found
+closing bracket found
+Peeked subroutineBody
+Curly brace found
+Statement peeked
+Do statement peeked
+Do found
+Subroutinecall peeked
+Identifier found
+Identifier found
+Opening bracket found
+Expression list peeked
+Expression peeked
+Relational expression peeked
+arithmetic expression peeked
+Term peeked = this
+Factor peeked = this
+Operand found = this
+Reserved word peeked
+Reserved word found = this
+Closing bracket found WEEEEE
+Semi-colon found
+Statement peeked POOOO
+return statement peeked
+Semi-colon found
+Found closing curly brace
+MEMBER DECLAR PEEKED ***********;
+token = method
+memberVar peeked
+Subroutine declaration keyword found
+Return type found = void
+Identifier found
+opening bracket found
+closing bracket found
+Peeked subroutineBody
+Curly brace found
+Statement peeked
+Do statement peeked
+Do found
+Subroutinecall peeked
+Identifier found
+Identifier found
+Opening bracket found
+Expression list peeked
+Expression peeked
+Relational expression peeked
+arithmetic expression peeked
+Term peeked = true
+Factor peeked = true
+Operand found = true
+Reserved word peeked
+Reserved word found = true
+Closing bracket found WEEEEE
+Semi-colon found
+Statement peeked POOOO
+Do statement peeked
+Do found
+Subroutinecall peeked
+Identifier found
+Identifier found
+Opening bracket found
+Expression list peeked
+Expression peeked
+Relational expression peeked
+arithmetic expression peeked
+Term peeked = x
+Factor peeked = x
+Operand found = x
+Identifier peeked = x
+Identifier found = x
+expression list peeked !!!Expression peekedRelational expression peeked
+arithmetic expression peeked
+Term peeked = y
+Factor peeked = y
+Operand found = y
+Identifier peeked = y
+Identifier found = y
+expression list peeked !!!Expression peekedRelational expression peeked
+arithmetic expression peeked
+Term peeked = x
+Factor peeked = x
+Operand found = x
+Identifier peeked = x
+Identifier found = x
+Term peeked
+Factor peeked = size
+Operand found = size
+Identifier peeked = size
+Identifier found = size
+expression list peeked !!!Expression peekedRelational expression peeked
+arithmetic expression peeked
+Term peeked = y
+Factor peeked = y
+Operand found = y
+Identifier peeked = y
+Identifier found = y
+Term peeked
+Factor peeked = size
+Operand found = size
+Identifier peeked = size
+Identifier found = size
+Closing bracket found WEEEEE
+Semi-colon found
+Statement peeked POOOO
+return statement peeked
+Semi-colon found
+Found closing curly brace
+MEMBER DECLAR PEEKED ***********;
+token = method
+memberVar peeked
+Subroutine declaration keyword found
+Return type found = void
+Identifier found
+opening bracket found
+closing bracket found
+Peeked subroutineBody
+Curly brace found
+Statement peeked
+Do statement peeked
+Do found
+Subroutinecall peeked
+Identifier found
+Identifier found
+Opening bracket found
+Expression list peeked
+Expression peeked
+Relational expression peeked
+arithmetic expression peeked
+Term peeked = false
+Factor peeked = false
+Operand found = false
+Reserved word peeked
+Reserved word found = false
+Closing bracket found WEEEEE
+Semi-colon found
+Statement peeked POOOO
+Do statement peeked
+Do found
+Subroutinecall peeked
+Identifier found
+Identifier found
+Opening bracket found
+Expression list peeked
+Expression peeked
+Relational expression peeked
+arithmetic expression peeked
+Term peeked = x
+Factor peeked = x
+Operand found = x
+Identifier peeked = x
+Identifier found = x
+expression list peeked !!!Expression peekedRelational expression peeked
+arithmetic expression peeked
+Term peeked = y
+Factor peeked = y
+Operand found = y
+Identifier peeked = y
+Identifier found = y
+expression list peeked !!!Expression peekedRelational expression peeked
+arithmetic expression peeked
+Term peeked = x
+Factor peeked = x
+Operand found = x
+Identifier peeked = x
+Identifier found = x
+Term peeked
+Factor peeked = size
+Operand found = size
+Identifier peeked = size
+Identifier found = size
+expression list peeked !!!Expression peekedRelational expression peeked
+arithmetic expression peeked
+Term peeked = y
+Factor peeked = y
+Operand found = y
+Identifier peeked = y
+Identifier found = y
+Term peeked
+Factor peeked = size
+Operand found = size
+Identifier peeked = size
+Identifier found = size
+Closing bracket found WEEEEE
+Semi-colon found
+Statement peeked POOOO
+return statement peeked
+Semi-colon found
+Found closing curly brace
+MEMBER DECLAR PEEKED ***********;
+token = method
+memberVar peeked
+Subroutine declaration keyword found
+Return type found = void
+Identifier found
+opening bracket found
+closing bracket found
+Peeked subroutineBody
+Curly brace found
+Statement peeked
+If statement peeked
+opening bracket found
+bracket peeked
+Expression peeked
+bracket peeked
+Relational expression peeked
+bracket peeked
+arithmetic expression peeked
+bracket peeked
+Term peeked = (
+bracket peeked
+Factor peeked = (
+bracket peeked
+Operand found = (
+bracket peeked
+expression peeked
+bracket peeked
+Relational expression peeked
+bracket peeked
+arithmetic expression peeked
+bracket peeked
+Term peeked = (
+bracket peeked
+Factor peeked = (
+bracket peeked
+Operand found = (
+expression peeked
+Relational expression peeked
+arithmetic expression peeked
+Term peeked = y
+Factor peeked = y
+Operand found = y
+Identifier peeked = y
+Identifier found = y
+Term peeked
+Factor peeked = size
+Operand found = size
+Identifier peeked = size
+Identifier found = size
+Closing bracket foundArithmetic expression peeked
+Term peeked = 254
+Factor peeked = 254
+Operand found = 254
+Integer constant found
+Closing bracket foundbracket peeked
+Relational expression peeked
+bracket peeked
+arithmetic expression peeked
+bracket peeked
+Term peeked = (
+bracket peeked
+Factor peeked = (
+bracket peeked
+Operand found = (
+bracket peeked
+expression peeked
+bracket peeked
+Relational expression peeked
+bracket peeked
+arithmetic expression peeked
+bracket peeked
+Term peeked = (
+bracket peeked
+Factor peeked = (
+bracket peeked
+Operand found = (
+expression peeked
+Relational expression peeked
+arithmetic expression peeked
+Term peeked = x
+Factor peeked = x
+Operand found = x
+Identifier peeked = x
+Identifier found = x
+Term peeked
+Factor peeked = size
+Operand found = size
+Identifier peeked = size
+Identifier found = size
+Closing bracket foundArithmetic expression peeked
+Term peeked = 510
+Factor peeked = 510
+Operand found = 510
+Integer constant found
+Closing bracket foundClosing bracket found
+opening curly brace found
+Statement peeked
+Do statement peeked
+Do found
+Subroutinecall peeked
+Identifier found
+Opening bracket found
+Expression list expected, idk the error code
+Closing bracket found WEEEEE
+Semi-colon found
+Statement peekedLet statement peeked
+Let identifier found
+Identifier found
+Equals peeked
+Expression peeked
+Relational expression peeked
+arithmetic expression peeked
+Term peeked = size
+Factor peeked = size
+Operand found = size
+Identifier peeked = size
+Identifier found = size
+Term peeked
+Factor peeked = 2
+Operand found = 2
+Integer constant found
+Semi-colon found
+Statement peekedDo statement peeked
+Do found
+Subroutinecall peeked
+Identifier found
+Opening bracket found
+Expression list expected, idk the error code
+Closing bracket found WEEEEE
+Semi-colon found
+Closing curly brace found
+Statement peeked POOOO
+return statement peeked
+Semi-colon found
+Found closing curly brace
+MEMBER DECLAR PEEKED ***********;
+token = method
+memberVar peeked
+Subroutine declaration keyword found
+Return type found = void
+Identifier found
+opening bracket found
+closing bracket found
+Peeked subroutineBody
+Curly brace found
+Statement peeked
+If statement peeked
+opening bracket found
+Expression peeked
+Relational expression peeked
+arithmetic expression peeked
+Term peeked = size
+Factor peeked = size
+Operand found = size
+Identifier peeked = size
+Identifier found = size
+Arithmetic expression peeked
+Term peeked = 2
+Factor peeked = 2
+Operand found = 2
+Integer constant found
+Closing bracket found
+opening curly brace found
+Statement peeked
+Do statement peeked
+Do found
+Subroutinecall peeked
+Identifier found
+Opening bracket found
+Expression list expected, idk the error code
+Closing bracket found WEEEEE
+Semi-colon found
+Statement peekedLet statement peeked
+Let identifier found
+Identifier found
+Equals peeked
+Expression peeked
+Relational expression peeked
+arithmetic expression peeked
+Term peeked = size
+Factor peeked = size
+Operand found = size
+Identifier peeked = size
+Identifier found = size
+Term peeked
+Factor peeked = 2
+Operand found = 2
+Integer constant found
+Semi-colon found
+Statement peekedDo statement peeked
+Do found
+Subroutinecall peeked
+Identifier found
+Opening bracket found
+Expression list expected, idk the error code
+Closing bracket found WEEEEE
+Semi-colon found
+Closing curly brace found
+Statement peeked POOOO
+return statement peeked
+Semi-colon found
+Found closing curly brace
+MEMBER DECLAR PEEKED ***********;
+token = void
+Member declaration not found
+pi.er = 6

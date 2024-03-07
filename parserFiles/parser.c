@@ -33,34 +33,35 @@ ParserInfo term();
 ParserInfo factor();
 ParserInfo operand();
 
-bool isFactorOrOperand(Token* token);
+bool isFactorOrOperand();
 bool isIntegerConstant(const char* string);
-bool isStatement(Token* token);
+bool isStatement();
 
 ParserInfo pi;
 Token token;
 
 // an expression starts with either -|~|integerConstant|identifier| (expression)| stringLiteral | true | false | null | this
-bool isFactorOrOperand(Token* token) {
+bool isFactorOrOperand() {
 
-	if(!strcmp(token->lx, "-") || !strcmp(token->lx, "~")) {
+	if(!strcmp(token.lx, "-") || !strcmp(token.lx, "~")) {
 		return true;
-	} else if (isIntegerConstant(token->lx)) {
+	} else if (isIntegerConstant(token.lx)) {
 		return true;
-	} else if (token->tp == ID) {
+	} else if (token.tp == ID) {
 		return true;
-	} else if (token->tp == STRING) {
+	} else if (token.tp == STRING) {
 		return true;
-	} else if (!strcmp(token->lx, "true") || !strcmp(token->lx, "false") || !strcmp(token->lx, "null") || !strcmp(token->lx, "this")) {
+	} else if (!strcmp(token.lx, "true") || !strcmp(token.lx, "false") || !strcmp(token.lx, "null") || !strcmp(token.lx, "this")) {
 		return true;
-	} else if (token->tp == SYMBOL && !strcmp(token->lx, "(")) {
-		token = PeekNextToken();
-		if (isFactorOrOperand(&token)) {
-			return true;
-		}
-	} else {
-		return false;
+	} else if (token.tp == SYMBOL && !strcmp(token.lx, "(")) {
+		printf("bracket peeked\n");
+		return true;
+		// token = PeekNextToken();
+		// if (isFactorOrOperand()) {
+		// 	return true;
+		// }
 	}
+	return false;
 }
 
 bool isIntegerConstant(const char* string) {
@@ -78,9 +79,9 @@ bool isIntegerConstant(const char* string) {
     return true;
 }
 
-bool isStatement(Token* token) {
+bool isStatement() {
 
-	if (!strcmp(token->lx, "var") || !strcmp(token->lx, "let") || !strcmp(token->lx, "if") || !strcmp(token->lx, "while") || !strcmp(token->lx, "do") || !strcmp(token->lx, "return")){
+	if (!strcmp(token.lx, "var") || !strcmp(token.lx, "let") || !strcmp(token.lx, "if") || !strcmp(token.lx, "while") || !strcmp(token.lx, "do") || !strcmp(token.lx, "return")){
 		return true;
 	} else {
 		return false;
@@ -138,6 +139,7 @@ ParserInfo classDeclar() {
 	while (token.tp != SYMBOL || strcmp(token.lx, "}")) {
 	// for (int i =0; i<5;i++) {
         
+		printf("MEMBER DECLAR PEEKED ***********;\n");
 		pi = memberDeclar();
 
 		if (pi.er != none) {
@@ -470,9 +472,9 @@ ParserInfo subroutineBody() {
 
 
 	token = PeekNextToken();
-	// if(isStatement(&token)) {
+	// if(isStatement()) {
 
-	while(isStatement(&token)) {
+	while(isStatement()) {
 		printf("Statement peeked POOOO\n");
 		pi = statement();
 
@@ -628,7 +630,7 @@ ParserInfo letStatement() {
 
 		// call expression();  NOT FINISHED****
 
-		if (isFactorOrOperand(&token)) {
+		if (isFactorOrOperand()) {
 			printf("Expression peeked\n");
 			pi = expression();
 		} else {
@@ -673,7 +675,7 @@ ParserInfo letStatement() {
 
 	token = PeekNextToken();
 
-	if (isFactorOrOperand(&token)) {
+	if (isFactorOrOperand()) {
 		printf("Expression peeked\n");
 		pi = expression();
 	} else {
@@ -719,8 +721,7 @@ ParserInfo ifStatement(){
 
 	token = PeekNextToken();
 
-	printf("token = %s\n", token.lx);
-	if (isFactorOrOperand(&token)) {
+	if (isFactorOrOperand()) {
 		printf("Expression peeked\n");
 		pi = expression();
 	} else {
@@ -757,7 +758,7 @@ ParserInfo ifStatement(){
 
 	token = PeekNextToken();
 
-	if (isStatement(&token)) {
+	if (isStatement()) {
 		printf("Statement peeked\n");
 		pi = statement();
 	} else {
@@ -767,7 +768,7 @@ ParserInfo ifStatement(){
 	token = PeekNextToken();
 
 
-	while(isStatement(&token)) {
+	while(isStatement()) {
 		printf("Statement peeked");
 		pi = statement();
 
@@ -808,7 +809,7 @@ ParserInfo ifStatement(){
 
 		token = PeekNextToken();
 
-		if (isStatement(&token)) {
+		if (isStatement()) {
 			printf("Statement peeked\n");
 			pi = statement();
 		} else {
@@ -818,7 +819,7 @@ ParserInfo ifStatement(){
 		token = PeekNextToken();
 
 
-		while(isStatement(&token)) {
+		while(isStatement()) {
 			printf("Statement peeked");
 			pi = statement();
 
@@ -902,7 +903,14 @@ ParserInfo subroutineCall(){
 	
 	token = GetNextToken();
 
-	printf("Identifier found\n");
+	if (token.tp == ID) {
+		printf("Identifier found\n");
+	} else {
+		printf("Identifier not found");
+		pi.er = idExpected;
+		pi.tk = token;
+	}
+
 
 	token = PeekNextToken();
 
@@ -937,20 +945,20 @@ ParserInfo subroutineCall(){
 
 	token = PeekNextToken();
 
-
-	if (isFactorOrOperand(&token)) {
-		printf("Expression peeked\n");
+	if (isFactorOrOperand()) {
+		printf("Expression list peeked\n");
 		pi = expressionList();
 	} else {
-		printf("Expression expected, idk the error code\n");
+		printf("Expression list expected, idk the error code\n");
 	}
 
 	token = GetNextToken();
 
+
 	if (token.tp == SYMBOL && !strcmp(token.lx, ")")) {
 		printf("Closing bracket found WEEEEE\n");
 	} else {
-		printf("Closing bracket expected\n");
+		printf("Closing bracket expected \n");
 	}
 
 	return pi;
@@ -963,7 +971,7 @@ ParserInfo returnStatement(){
 
 	token = PeekNextToken();
 
-	if (isFactorOrOperand(&token)) {
+	if (isFactorOrOperand()) {
 		printf("Expression peeked\n");
 		pi = expression();
 	} 
@@ -983,8 +991,10 @@ ParserInfo returnStatement(){
 
 // expressionList -> expression { , expression } | ε
 ParserInfo expressionList() {
-	
-	if (isFactorOrOperand(&token)) {
+
+	// token = PeekNextToken();
+
+	if (isFactorOrOperand()) {
 		printf("Expression peeked\n");
 		pi = expression();
 	} else {
@@ -1000,10 +1010,11 @@ ParserInfo expressionList() {
 
 	while (token.tp == SYMBOL && !strcmp(token.lx, ",")) {
 
+		printf("expression list peeked !!!");
 		token = GetNextToken();
 		token = PeekNextToken();
 
-		if (isFactorOrOperand(&token)) {
+		if (isFactorOrOperand()) {
 			printf("Expression peeked");
 			pi = expression();
 		} else {
@@ -1019,7 +1030,9 @@ ParserInfo expressionList() {
 // expression -> relationalExpression { ( & | | ) relationalExpression }
 ParserInfo expression() {
 
-	if (isFactorOrOperand(&token)) {
+	// token = PeekNextToken();
+
+	if (isFactorOrOperand()) {
 		printf("Relational expression peeked\n");
 		pi = relationalExpression();
 	} else {
@@ -1038,7 +1051,7 @@ ParserInfo expression() {
 		token = GetNextToken();
 		token = PeekNextToken();
 
-		if (isFactorOrOperand(&token)) {
+		if (isFactorOrOperand()) {
 			printf("Relational expression peeked\n");
 			pi = relationalExpression();
 		} else {
@@ -1054,10 +1067,10 @@ ParserInfo expression() {
 
 // relationalExpression -> ArithmeticExpression { ( = | > | < ) ArithmeticExpression }
 ParserInfo relationalExpression() {
-	
-	printf("RELATIONAL EXPRESSION YAY !!!!\n");
 
-	if (isFactorOrOperand(&token)) {
+	// token = PeekNextToken();
+
+	if (isFactorOrOperand()) {
 		printf("arithmetic expression peeked\n");
 		pi = arithmeticExpression();
 	} else {
@@ -1073,7 +1086,7 @@ ParserInfo relationalExpression() {
 		token = GetNextToken();
 		token = PeekNextToken();
 
-		if (isFactorOrOperand(&token)) {
+		if (isFactorOrOperand()) {
 			printf("Arithmetic expression peeked\n");
 			pi = arithmeticExpression();
 		} else {
@@ -1093,8 +1106,10 @@ ParserInfo relationalExpression() {
 // ArithmeticExpression -> term { ( + | - ) term }
 ParserInfo arithmeticExpression() {
 
-	if (isFactorOrOperand(&token)) {
-		printf("Term peeked\n");
+	// token = PeekNextToken();
+
+	if (isFactorOrOperand()) {
+		printf("Term peeked = %s\n", token.lx);
 		pi = term();
 	} else {
 		printf("Term expected, idk the error code");
@@ -1103,13 +1118,15 @@ ParserInfo arithmeticExpression() {
 	if (pi.er != none) {
 		return pi;
 	}
+	
+	token = PeekNextToken();
 
-	while (token.tp == SYMBOL && (!strcmp(token.lx, "+") || !strcmp(token.lx, "+"))) {
+	while (token.tp == SYMBOL && (!strcmp(token.lx, "+") || !strcmp(token.lx, "-"))) {
 
 		token = GetNextToken();
 		token = PeekNextToken();
 
-		if (isFactorOrOperand(&token)) {
+		if (isFactorOrOperand()) {
 			printf("Term peeked\n");
 			pi = term();
 		} else {
@@ -1128,9 +1145,11 @@ ParserInfo arithmeticExpression() {
 
 // term -> factor { ( * | / ) factor }
 ParserInfo term() {
+	
+	// token = PeekNextToken();
 
-	if (isFactorOrOperand(&token)) {
-		printf("Factor peeked\n");
+	if (isFactorOrOperand()) {
+		printf("Factor peeked = %s\n", token.lx);
 		pi = factor();
 	} else {
 		printf("Factor expected, idk the error code\n");
@@ -1147,7 +1166,7 @@ ParserInfo term() {
 		token = GetNextToken();
 		token = PeekNextToken();
 
-		if (isFactorOrOperand(&token)) {
+		if (isFactorOrOperand()) {
 			printf("Factor peeked\n");
 			pi = factor();
 		} else {
@@ -1167,19 +1186,13 @@ ParserInfo term() {
 // factor -> ( - | ~ | ε ) operand
 ParserInfo factor() {
 
-	printf("token = %s\n", token.lx);
-
 	if (token.tp == SYMBOL && !strcmp(token.lx, "-") || !strcmp(token.lx, "~")) {
 		token = GetNextToken();
 		printf("Symbol found");
 	} 
 
-	// token = PeekNextToken();
-	printf("token = %s\n", token.lx);
-
-
-	if (isFactorOrOperand(&token)) {
-		printf("Operand found\n");
+	if (isFactorOrOperand()) {
+		printf("Operand found = %s\n", token.lx);
 		pi = operand();
 	} else {
 		printf("Operand expected, idk the error code\n");
@@ -1190,15 +1203,21 @@ ParserInfo factor() {
 
 // operand -> integerConstant | identifier [.identifier ] [ [ expression ] | (expressionList) ] | (expression) | stringLiteral | true | false | null | this
 ParserInfo operand() {
+	
+	// token = PeekNextToken();
 
 	if (isIntegerConstant(token.lx)) { // Integer constant
-
 		token = GetNextToken();
 		printf("Integer constant found\n");
 
 	} else if (token.tp == ID) { // identifier [.identifier ] [ [ expression ] | (expressionList ) ]
+		
 
-		printf("Identifier found\n");
+		printf("Identifier peeked = %s\n", token.lx);
+
+		token = GetNextToken();
+
+		printf("Identifier found = %s\n", token.lx);
 
 		token = PeekNextToken();
 		if (token.tp == SYMBOL && !strcmp(token.lx, ".")) {
@@ -1223,12 +1242,11 @@ ParserInfo operand() {
 		} 
 
 		if (token.tp == SYMBOL && !strcmp(token.lx, "[")) {
-			
 			token = GetNextToken();
 			printf("Opening square bracket found\n");
 
 			token = PeekNextToken();
-			if (isFactorOrOperand(&token)) {
+			if (isFactorOrOperand()) {
 				printf("Expression peeked\n");
 				pi = expression();
 			} else {
@@ -1253,7 +1271,7 @@ ParserInfo operand() {
 			printf("Opening bracket found\n");
 
 			token = PeekNextToken();
-			if (isFactorOrOperand(&token)) {
+			if (isFactorOrOperand()) {
 				printf("Expression peeked\n");
 				pi = expressionList();
 			} else {
@@ -1278,7 +1296,7 @@ ParserInfo operand() {
 		token = GetNextToken();
 		token = PeekNextToken();
 
-		if (isFactorOrOperand(&token)) {
+		if (isFactorOrOperand()) {
 			printf("expression peeked\n");
 			pi = expression();
 		} else {
