@@ -36,6 +36,7 @@ ParserInfo operand();
 bool isFactorOrOperand();
 bool isIntegerConstant(const char* string);
 bool isStatement();
+bool isType();
 
 ParserInfo pi;
 Token token;
@@ -54,7 +55,7 @@ bool isFactorOrOperand() {
 	} else if (!strcmp(token.lx, "true") || !strcmp(token.lx, "false") || !strcmp(token.lx, "null") || !strcmp(token.lx, "this")) {
 		return true;
 	} else if (token.tp == SYMBOL && !strcmp(token.lx, "(")) {
-		// //printf("bracket peeked\n");
+		//printf("bracket peeked\n");
 		return true;
 		// token = PeekNextToken();
 		// if (isFactorOrOperand()) {
@@ -82,6 +83,17 @@ bool isIntegerConstant(const char* string) {
 bool isStatement() {
 
 	if (!strcmp(token.lx, "var") || !strcmp(token.lx, "let") || !strcmp(token.lx, "if") || !strcmp(token.lx, "while") || !strcmp(token.lx, "do") || !strcmp(token.lx, "return")){
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool isType() {
+	
+	if (token.tp == ID) {
+		return true;
+	} else if (!strcmp(token.lx, "int") || !strcmp(token.lx, "char") || !strcmp(token.lx, "boolean")) {
 		return true;
 	} else {
 		return false;
@@ -202,7 +214,7 @@ ParserInfo classVarDeclar() {
 
 	// Check if type
 	token = PeekNextToken();
-	if (token.tp == RESWORD) {
+	if (isType()) {
 		pi = type();
 	} else {
 		pi.er = illegalType;
@@ -228,8 +240,8 @@ ParserInfo classVarDeclar() {
 
 	// Check if more identifiers, if so eat them
 	token = PeekNextToken();
-	while(token.tp == SYMBOL && !strcmp(token.lx, ",")) {
-		
+	while (token.tp == SYMBOL && !strcmp(token.lx, ",")) {
+
 		token = GetNextToken();
 		token = GetNextToken();
 
@@ -267,7 +279,7 @@ ParserInfo type() {
 	if (!strcmp(token.lx, "int") || !strcmp(token.lx, "char") || !strcmp(token.lx, "boolean")) {
 		//printf("Variable type found\n");
 	} else if (token.tp == ID) {
-		//printf("CONSTRUCTOR IDENTIFIER FOUND !!!");
+		//printf("return type = Identifier found\n");
 	}
 	 else {
 		//printf("Illegal type\n!");
@@ -278,7 +290,7 @@ ParserInfo type() {
 	return pi;
 }
 
-// subroutine -> (constructor | function | method) (type|ParserInfo) identifier (paramList) subroutineBody
+// subroutine -> (constructor | function | method) (type|void) identifier (paramList) subroutineBody
 ParserInfo subroutineDeclar() {
 
 	// Eat constructor or function or method resererved word 
@@ -299,7 +311,7 @@ ParserInfo subroutineDeclar() {
 	if(!strcmp(token.lx, "void")) {
 		token = GetNextToken();
 		//printf("Return type found = void\n");
-	} else if (token.tp == ID) {
+	} else if (isType()) {
 		pi = type();
 		//printf("Return type found = %s\n", token.lx);
 	} else {
@@ -337,18 +349,17 @@ ParserInfo subroutineDeclar() {
 		pi.tk = token;
 	}
 
+	if (pi.er != none) {
+		return pi;
+	}
+
 	token = PeekNextToken();
 
 	// call Paramlist();
-	if (token.tp == RESWORD) {
+	if (isType()) {
 		//printf("Parameter peeked\n");
 		pi = paramList();
 	}
-	// } else {
-	// 	//printf("illegal parameter\n");
-	// 	pi.er = illegalType;
-	// 	pi.tk = token;
-	// }
 
 	if (pi.er != none) {
 		return pi;
@@ -360,7 +371,7 @@ ParserInfo subroutineDeclar() {
 		//printf("closing bracket found\n");
 	} else {
 		//printf("closing bracket not found\n");
-		pi.er = closeBracketExpected;
+		pi.er = closeParenExpected;
 		pi.tk = token;
 	}
 
@@ -386,7 +397,7 @@ ParserInfo paramList() {
 
 	token = PeekNextToken();
 
-	if (token.tp == RESWORD) {
+	if (isType()) {
 		pi = type();
 	} else {
 		//printf("Type expected\n");
@@ -419,7 +430,7 @@ ParserInfo paramList() {
 		token = GetNextToken();
 		token = PeekNextToken();
 
-		if (token.tp == RESWORD) {
+		if (isType()) {
 			pi = type();
 		} else {
 			//printf("Illegal type");
@@ -478,7 +489,7 @@ ParserInfo subroutineBody() {
 	// if(isStatement()) {
 
 	while(isStatement()) {
-		//printf("Statement peeked POOOO\n");
+		//printf("Statement peeked\n");
 		pi = statement();
 
 		if (pi.er != none) {
@@ -539,7 +550,7 @@ ParserInfo varDeclarStatement() {
 
 	// Check if type
 	token = PeekNextToken();
-	if (token.tp == RESWORD) {
+	if (isType()) {
 		pi = type();
 	} else {
 		pi.er = illegalType;
@@ -566,7 +577,7 @@ ParserInfo varDeclarStatement() {
 
 	// Check if more identifiers, if so eat them
 	token = PeekNextToken();
-	while(token.tp == SYMBOL && !strcmp(token.lx, ",")) {
+	while (token.tp == SYMBOL && !strcmp(token.lx, ",")) {
 		
 		token = GetNextToken();
 		token = GetNextToken();
@@ -683,7 +694,8 @@ ParserInfo letStatement() {
 		pi = expression();
 	} else {
 		//printf("Expression expected, idk the error code\n");
-		return pi;
+		pi.er = syntaxError;
+		pi.tk = token;
 	}
 
 	if (pi.er != none) {
@@ -759,14 +771,14 @@ ParserInfo ifStatement(){
 		pi.tk = token;
 	}
 
-	token = PeekNextToken();
+	// token = PeekNextToken();
 
-	if (isStatement()) {
-		//printf("Statement peeked\n");
-		pi = statement();
-	} else {
-		//printf("Statement expected, idk the error code\n");
-	}
+	// if (isStatement()) {
+	// 	//printf("Statement peeked\n");
+	// 	pi = statement();
+	// } else {
+	// 	//printf("Statement expected, idk the error code\n");
+	// }
 
 	token = PeekNextToken();
 
@@ -850,6 +862,75 @@ ParserInfo ifStatement(){
 
 // whileStatement -> while ( expression ) { {statement} }
 ParserInfo whileStatement() {
+
+	token = GetNextToken();
+
+	token = GetNextToken();
+
+	if (token.tp == SYMBOL && !strcmp(token.lx, "(")) {
+		//printf("Opening bracket found\n");
+	} else {
+		//printf("Opening bracket expected");
+		pi.er = openParenExpected;
+		pi.tk = token;
+	}
+	
+	if (pi.er != none) {
+		return pi;
+	}
+
+	token = PeekNextToken();
+
+	if (isFactorOrOperand()) {
+		//printf("Expression peeked\n");
+		pi = expression();
+	} else {
+		//printf("Expression expected, idk the error code\n");
+	}
+
+	token = GetNextToken();
+
+	if (token.tp == SYMBOL && !strcmp(token.lx, ")")) {
+		//printf("Closing bracket found\n");
+	} else {
+		//printf("Closing bracket expected\n");
+		pi.er = openBraceExpected;
+		pi.tk = token;
+	}
+
+	token = GetNextToken();
+
+	if (token.tp == SYMBOL && !strcmp(token.lx, "{")) {
+		//printf("opening curly brace found\n");
+	} else {
+		//printf("opening curly brace expected\n");
+		pi.er = openBraceExpected;
+		pi.tk = token;
+	}
+
+	token = PeekNextToken();
+
+	while(isStatement()) {
+		//printf("Statement peeked");
+		pi = statement();
+
+		if (pi.er != none) {
+			return pi;
+		}
+
+		token = PeekNextToken();
+	} 
+
+	token = GetNextToken();
+
+	if (token.tp == SYMBOL && !strcmp(token.lx, "}")) {
+		//printf("Closing curly brace found\n");
+	} else {
+		//printf("Closing curly brace expected\n");
+		pi.er = closeBraceExpected;
+		pi.tk = token;
+	}
+
 	return pi;
 }
 
@@ -944,6 +1025,12 @@ ParserInfo subroutineCall(){
 		//printf("Opening bracket found\n");
 	} else {
 		//printf("Opening bracket expected");
+		pi.er = openParenExpected;
+		pi.tk = token;
+	}
+
+	if (pi.er != none) {
+		return pi;
 	}
 
 	token = PeekNextToken();
@@ -962,6 +1049,8 @@ ParserInfo subroutineCall(){
 		//printf("Closing bracket found WEEEEE\n");
 	} else {
 		//printf("Closing bracket expected \n");
+		pi.er = closeParenExpected;
+		pi.tk = token;
 	}
 
 	return pi;
@@ -1094,6 +1183,8 @@ ParserInfo relationalExpression() {
 			pi = arithmeticExpression();
 		} else {
 			//printf("Arithmetic expression expected, idk the error code\n");
+			pi.er = syntaxError;
+			pi.tk = token;
 		}
 
 		if (pi.er != none) { 
@@ -1193,6 +1284,8 @@ ParserInfo factor() {
 		token = GetNextToken();
 		//printf("Symbol found");
 	} 
+
+	token = PeekNextToken();
 
 	if (isFactorOrOperand()) {
 		//printf("Operand found = %s\n", token.lx);
@@ -1341,7 +1434,12 @@ ParserInfo operand() {
 }
 
 int InitParser (char* file_name) {
+
+
 	InitLexer(file_name);
+
+
+
 	return 1;
 }
 
@@ -1352,7 +1450,7 @@ ParserInfo Parse ()
 	pi.er = none;
 
 	classDeclar();
-	printf("pi.er = %u", pi.er);
+	//printf("pi.er = %u", pi.er);
 	if (pi.er != none) {
 		return pi;
 	}
@@ -1368,7 +1466,7 @@ int StopParser ()
 #ifndef TEST_PARSER
 int main ()
 {
-	InitParser("Square.jack");
+	InitParser("SquareGame.jack");
 	Parse();
 	
 	return 1;

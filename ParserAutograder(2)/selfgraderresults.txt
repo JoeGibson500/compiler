@@ -4,104 +4,84 @@ Started ...
 
 Testing your parser on various source files (1 mark each)
 File Main.jack 
-pi.er = 8** Oops: your parser returned the following info:
-error type: a type must be int, char, boolean, or identifier, line: 9,token: Array, 
-It should have returned:
-none
-Sorry, -1 mark
+	PASSED
 File Ball.jack 
-pi.er = 8** Oops: your parser returned the following info:
-error type: a type must be int, char, boolean, or identifier, line: 64,token: int, 
-It should have returned:
-none
-Sorry, -1 mark
+	PASSED
 File Fraction.jack 
-pi.er = 8** Oops: your parser returned the following info:
-error type: a type must be int, char, boolean, or identifier, line: 30,token: int, 
+** Oops: your parser returned the following info:
+error type: ] expected, line: 34,token: Fraction, 
 It should have returned:
 none
 Sorry, -1 mark
 File List.jack 
-pi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 9,token: List, 
 It should have returned:
 none
 Sorry, -1 mark
 File Square.jack 
-pi.er = 0	PASSED
+	PASSED
 File SquareGame.jack 
-pi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 18,token: Square, 
 It should have returned:
 none
 Sorry, -1 mark
 File classExpected.jack 
-pi.er = 2	PASSED
+	PASSED
 File closeBracketExpected.jack 
-pi.er = 8** Oops: your parser returned the following info:
-error type: a type must be int, char, boolean, or identifier, line: 9,token: Array, 
-It should have returned:
-error type: ] expected, line: 19,token: ;, 
-Sorry, -1 mark
+	PASSED
 File closeParenExpected.jack 
-pi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 9,token: List, 
 It should have returned:
 error type: ) expected, line: 19,token: {, 
 Sorry, -1 mark
 File closeParenExpected1.jack 
-pi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 18,token: Square, 
 It should have returned:
 error type: ) expected, line: 43,token: ;, 
 Sorry, -1 mark
 File equalExpected.jack 
-pi.er = 8** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: a type must be int, char, boolean, or identifier, line: 18,token: Square, 
 It should have returned:
 error type: = expected, line: 27,token: 0, 
 Sorry, -1 mark
 File idExpected.jack 
-pi.er = 3	PASSED
+	PASSED
 File idExpected2.jack 
-pi.er = 3	PASSED
+	PASSED
 File openBraceExpected.jack 
-pi.er = 4	PASSED
+	PASSED
 File openParenExpected.jack 
-pi.er = 8** Oops: your parser returned the following info:
-error type: a type must be int, char, boolean, or identifier, line: 64,token: int, 
+** Oops: your parser returned the following info:
+none
 It should have returned:
 error type: ( expected, line: 52,token: false, 
 Sorry, -1 mark
 File semicolonExpected.jack 
-pi.er = 9	PASSED
+	PASSED
 File syntaxError.jack 
-pi.er = 8** Oops: your parser returned the following info:
-error type: a type must be int, char, boolean, or identifier, line: 64,token: int, 
-It should have returned:
-error type: ) expected, line: 96,token: dx, 
-Sorry, -1 mark
+	PASSED
 File syntaxError1.jack 
-pi.er = 8** Oops: your parser returned the following info:
-error type: a type must be int, char, boolean, or identifier, line: 30,token: int, 
+** Oops: your parser returned the following info:
+error type: ] expected, line: 34,token: Fraction, 
 It should have returned:
 error type: syntax error, line: 61,token: ;, 
 Sorry, -1 mark
 File syntaxError2.jack 
-pi.er = 8** Oops: your parser returned the following info:
-error type: a type must be int, char, boolean, or identifier, line: 64,token: int, 
-It should have returned:
-error type: ; expected, line: 91,token: ), 
-Sorry, -1 mark
+	PASSED
 File NewLineInStr.jack 
-pi.er = 2** Oops: your parser returned the following info:
+** Oops: your parser returned the following info:
 error type: keyword class expected, line: 1,token: Error: new line in string constant, 
 It should have returned:
 error type: lexer error, line: 1,token: , 
 Sorry, -1 mark
 
 ---------------------------------------------------
-		Total mark = 6/20
+		Total mark = 11/20
 ---------------------------------------------------
 
 Finished
