@@ -1486,6 +1486,7 @@ ParserInfo operand() {
 			//printf("Illegal reserved word, idk the error\n");
 		}
 	}
+
 	return pi;
 }
 
@@ -1513,11 +1514,13 @@ int StopParser ()
 	return 1;
 }
 
-#ifndef TEST_PARSER
-int main ()
-{
-	InitParser("Fraction.jack");
-	Parse();	
-	return 1;
-}
-#endif
+// #ifndef TEST_PARSER
+// int main ()
+// {
+// 	InitParser("Fraction.jack");
+// 	Parse();
+// 	//printf("FINISHED");
+	
+// 	return 1;
+// }
+// #endif
