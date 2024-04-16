@@ -6,7 +6,8 @@
 
 #include "lexer.h"
 #include "parser.h"
-
+#include "symbols.h"
+#include "compiler.h"
 
 // you can declare prototypes of parser functions below
 
@@ -41,6 +42,16 @@ bool isLexerError();
 
 ParserInfo pi;
 Token t;
+
+char currentClassName[128];
+char currentMethodName[128];
+char currentVariableName[128];
+char classInstanceName[128];
+char classInstanceMethodName[128];
+char currentJackLibraryClass[128];
+char currentType[128];
+
+// int phaseNumber = 1;
 
 // an expression starts with either -|~|integerConstant|identifier| (expression)| stringLiteral | true | false | null | this
 bool isFactorOrOperand() {
@@ -113,8 +124,10 @@ bool isLexerError() {
 ParserInfo classDeclar() {
 
 	// Eat Starting word "class"
-	t = GetNextToken();
+	t = GetNextToken();	
 	if (isLexerError()) return pi;
+
+	// printf("FIRST TOKEN = %s", t.lx);
 
 	if (t.tp == RESWORD && !strcmp(t.lx, "class")) {
 		//printf("Class found\n");
@@ -132,6 +145,15 @@ ParserInfo classDeclar() {
 	
 	if (t.tp == ID) {
 		//printf("Identifier found\n");
+		strcpy(currentClassName, t.lx);
+		if(phaseNumber == 1) {
+			if (FindClassSymbol(currentClassName)) {
+				pi.er = redecIdentifier;
+				pi.tk = t;
+			} else {
+				InsertClassSymbol(currentClassName);
+			}
+		}
 	} else {
 		//printf("Identifier not found\n");
 		pi.er = idExpected;
@@ -188,10 +210,17 @@ ParserInfo memberDeclar() {
 
 	if (t.tp == RESWORD && (!strcmp(t.lx, "static") || !strcmp(t.lx, "field"))){
 		//printf("classVar peeked\n");
+		// strcpy(currentMethodName, t.lx);
+		// InsertMethodSymbol(currentClassName, currentMethodName);
+
 		pi = classVarDeclar();
+
 	} else if ((t.tp == RESWORD) && (!strcmp(t.lx, "function") || !strcmp(t.lx, "constructor") || !strcmp(t.lx, "method"))) {
 		//printf("subroutineDeclar peeked\n");
+		// strcpy(currentMethodName, t.lx);
+		// InsertMethodSymbol(currentClassName, currentMethodName);
 		pi = subroutineDeclar();
+		// InsertMethodSymbol(currentClassName, t.lx);
 	} else {
 		//printf("Member declaration not found\n");
 		pi.er = memberDeclarErr;
@@ -231,8 +260,19 @@ ParserInfo classVarDeclar() {
 	t = GetNextToken();
 	if (isLexerError()) return pi;
 
+	
+
 	if(t.tp == ID) {
 		//printf("Identifier found = %s\n", t.lx);
+		strcpy(currentMethodName, t.lx);
+		if (phaseNumber == 1) {
+			if (FindMethodSymbol(currentClassName, currentMethodName)) {
+				pi.er = redecIdentifier;
+				pi.tk = t;
+			} else {
+				InsertMethodSymbol(currentClassName, currentMethodName);
+			}
+		}
 	} else {
 		//printf("Identifier not found\n");
 		pi.er = idExpected;
@@ -251,7 +291,19 @@ ParserInfo classVarDeclar() {
 		if (isLexerError()) return pi;
 
 		if (t.tp == ID) {
-			//printf("Identifier found = %s\n",t.lx);
+			//printf("Identifier found\n");
+			strcpy(currentMethodName, t.lx);
+
+			if (phaseNumber == 1) {
+
+				if (FindMethodSymbol(currentClassName, currentMethodName)) {
+					pi.er = redecIdentifier;
+					pi.tk = t;
+				} else {
+					InsertMethodSymbol(currentClassName, currentMethodName);
+				}
+			}
+
 		} else {
 			//printf("Identifier not found");
 			pi.er = idExpected;
@@ -285,7 +337,18 @@ ParserInfo type() {
 	if (!strcmp(t.lx, "int") || !strcmp(t.lx, "char") || !strcmp(t.lx, "boolean")) {
 		//printf("Variable type found\n");
 	} else if (t.tp == ID) {
-		//printf("return type = Identifier found\n");
+		
+		strcpy(currentVariableName, t.lx);
+		if (phaseNumber == 2) {
+
+			if (FindClassSymbol(currentClassName) || FindMethodSymbol(currentClassName, currentVariableName) || FindVariableSymbol(currentClassName, currentMethodName, currentVariableName)) {
+				// Do nothing
+			} else {
+				printf("Undeclared identifier");
+				pi.er = undecIdentifier;
+				pi.tk = t;
+			}
+		}
 	}
 	 else {
 		//printf("Illegal type\n!");
@@ -304,6 +367,7 @@ ParserInfo subroutineDeclar() {
 	if (isLexerError()) return pi;
 	if (t.tp == RESWORD && (!strcmp(t.lx, "constructor") || !strcmp(t.lx, "function") || !strcmp(t.lx, "method"))){
 		//printf("Subroutine declaration keyword found\n");
+
 	} else {
 		//printf("Subroutine declaration keyword not found\n");
 		pi.er = subroutineDeclarErr;
@@ -335,6 +399,20 @@ ParserInfo subroutineDeclar() {
 
 	if (t.tp == ID) {
 		//printf("Identifier found\n");
+
+		strcpy(currentMethodName, t.lx);
+
+		if (phaseNumber == 1) {
+
+			if (FindMethodSymbol(currentClassName, currentMethodName)) {
+				pi.er = redecIdentifier;
+				pi.tk = t;
+			} else {
+				InsertMethodSymbol(currentClassName, currentMethodName);
+			}
+
+		}
+
 	} else {
 		//printf("Identifier not found\n");
 		pi.er = idExpected;
@@ -578,8 +656,20 @@ ParserInfo varDeclarStatement() {
 	if (isLexerError()) return pi;
 	if(t.tp == ID) {
 		//printf("Identifier found = %s\n", t.lx);
+		strcpy(currentVariableName, t.lx);
+
+		if(phaseNumber == 1) {
+			if (FindVariableSymbol(currentClassName, currentMethodName, currentVariableName)) {
+				printf("redeclaration of variable");
+				pi.er = redecIdentifier;
+				pi.tk = t;
+			} else {
+				InsertVariableSymbol(currentClassName, currentMethodName, currentVariableName);
+			}
+
+		}
 	} else {
-		//printf("Identifier not found\n");\
+		//printf("Identifier not found\n");
 		pi.er = idExpected;
 		pi.tk = t;
 	}
@@ -597,6 +687,8 @@ ParserInfo varDeclarStatement() {
 
 		if (t.tp == ID) {
 			//printf("Identifier found = %s\n",t.lx);
+			strcpy(currentVariableName, t.lx);
+			InsertVariableSymbol(currentClassName, currentMethodName, currentVariableName);
 		} else {
 			//printf("Identifier not found");
 			pi.er = idExpected;
@@ -643,7 +735,20 @@ ParserInfo letStatement() {
 	if (isLexerError()) return pi;
 
 	if (t.tp == ID) {
-		//printf("Identifier found\n");
+
+		strcpy(currentVariableName, t.lx);
+
+		if (phaseNumber == 2) {
+
+			if (FindVariableSymbol(currentClassName, currentMethodName, currentVariableName) || FindMethodSymbol(currentClassName, currentVariableName)) {
+				// Do nothing
+			} else {
+				printf("Undeclared identifier");
+				pi.er = undecIdentifier;
+				pi.tk = t;
+			}		
+
+		}
 	} else {
 		//printf("Identifier not found\n");
 		pi.er = idExpected;
@@ -1029,7 +1134,21 @@ ParserInfo subroutineCall(){
 	if (isLexerError()) return pi;
 
 	if (t.tp == ID) {
-		//printf("Identifier found\n");
+
+		strcpy(classInstanceName, t.lx);
+		// strcpy(currentVariableName, t.lx);
+		if (phaseNumber == 2) {
+
+			if (FindClassSymbol(classInstanceName) || FindMethodSymbol(currentClassName, classInstanceName) || FindVariableSymbol(currentClassName, currentMethodName, classInstanceName)) {
+				// Do nothing
+			} else if (IsJackLibraryClass(classInstanceName)) {
+				strcpy(currentJackLibraryClass, t.lx); 
+			} else {
+				printf("Undeclared identifier POO");
+				pi.er = undecIdentifier;
+				pi.tk = t;
+			}	
+		}
 	} else {
 		//printf("Identifier not found");
 		pi.er = idExpected;
@@ -1054,6 +1173,20 @@ ParserInfo subroutineCall(){
 			t = GetNextToken();
 			if (isLexerError()) return pi;
 			//printf("Identifier found\n");
+
+			strcpy(classInstanceMethodName, t.lx);
+		
+			if (phaseNumber == 2) {
+				 if (FindMethodSymbol(classInstanceName, classInstanceMethodName)) {
+					// Do nothing
+				} else if (IsJackLibraryMethod(classInstanceName, classInstanceMethodName)) {
+					// Do nothing also 
+				} else {
+					printf("Undeclared identifier");
+					pi.er = undecIdentifier;
+					pi.tk = t;
+				}	
+			}			
 		} else {
 			//printf("Identifier expected\n");
 			pi.er = idExpected;
@@ -1363,6 +1496,20 @@ ParserInfo operand() {
 		t = GetNextToken();
 		if (isLexerError()) return pi;
 
+		strcpy(currentVariableName, t.lx);
+		if (phaseNumber == 2) {
+
+			if (FindMethodSymbol(currentClassName, currentMethodName) || FindVariableSymbol(currentClassName, currentMethodName, currentVariableName)) {
+				// Do nothing
+			} else {
+				printf("Undeclared identifier");
+				pi.er = undecIdentifier;
+				pi.tk = t;
+			}		
+		}
+
+		if (pi.er != none) return pi;
+
 		// Check if identifier is followed by .identifier
 		t = PeekNextToken();
 		if (t.tp == SYMBOL && !strcmp(t.lx, ".")) {
@@ -1374,6 +1521,17 @@ ParserInfo operand() {
 			if (isLexerError()) return pi;
 			if (t.tp == ID) {
 				//printf("Identifier found = %s\n", t.lx);
+
+				strcpy(currentVariableName, t.lx);
+				if (phaseNumber == 2) {
+					if (FindMethodSymbol(currentClassName, currentMethodName) || FindVariableSymbol(currentClassName, currentMethodName, currentVariableName)) {
+						// Do nothing
+					} else {
+						printf("Undeclared identifier");
+						pi.er = undecIdentifier;
+						pi.tk = t;
+					}	
+				}	
 			} else {
 				//printf("Identifier expected\n");
 				pi.er = idExpected;
@@ -1486,41 +1644,64 @@ ParserInfo operand() {
 			//printf("Illegal reserved word, idk the error\n");
 		}
 	}
-
 	return pi;
 }
 
 int InitParser (char* file_name) {
+
+	// printf("POOOOOOO");
 	InitLexer(file_name);
 	return 1;
+
 }
 
 ParserInfo Parse ()
 {
-	pi.er = none;
+
+	RewindFile();
+	// phaseNumber = 2;
 	classDeclar();
-	//printf(" BIG pi.er = %u, pi.tk = %s", pi.er, t.lx);
-	t = GetNextToken();
-	//printf("pi.tk = %s",  t.lx);
-	t = GetNextToken();
-	//printf(" pi.tk = %s",  t.lx);
-	t = GetNextToken();
-	//printf("pi.tk = %s", t.lx);
+	printf("pi.er = %u, pi.tk = %s\n",  pi.er , t.lx);
+	// PrintSymbols();
 	return pi; 
+
+
+	// pi.er = none;
+
+	// classDeclar();
+	
+	// if (pi.er != none) {
+	// 	return pi;
+	// }
+
+	// printf("pi.er = %u, pi.tk = %s\n",  pi.er , t.lx);
+	// PrintSymbols();
+
+	// RewindFile();
+
+	// phaseNumber = 2;
+
+	// classDeclar();
+
+	// printf("pi.er = %u, pi.tk = %s\n",  pi.er , t.lx);
+	// PrintSymbols();
+
+
+	// return pi; 
 }
 
 int StopParser ()
 {
+	StopLexer();
 	return 1;
 }
 
 // #ifndef TEST_PARSER
 // int main ()
 // {
-// 	InitParser("Fraction.jack");
-// 	Parse();
-// 	//printf("FINISHED");
 	
+// 	InitParser("Pong/Main.jack");
+// 	Parse();
 // 	return 1;
 // }
 // #endif

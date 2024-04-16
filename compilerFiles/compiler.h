@@ -6,6 +6,8 @@
 #include "parser.h"
 #include "symbols.h"
 
+extern int phaseNumber;
+
 int InitCompiler ();
 ParserInfo compile (char* dir_name);
 int StopCompiler();

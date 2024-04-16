@@ -6,7 +6,7 @@
 
 struct VariableSymbol {
 
-    char variableName[128];
+    char variableSymbolName[128];
     struct VariableSymbol* next; // point to next variable symbol
 
 } VariableSymbol;
@@ -24,7 +24,7 @@ struct MethodSymbol {
 
 struct ClassSymbol {
 
-    char className[128];
+    char classSymbolName[128];
     struct MethodSymbol* methodSymbols; // list of Method Symbols 
     struct ClassSymbol* next; // point to next class symbol
 
@@ -45,5 +45,6 @@ void InitMethodTable(const char* className, const char* methodName);
 void InsertClassSymbol(const char* className);
 void InsertMethodSymbol(const char* className, const char* methodName);
 void InsertVariableSymbol(const char* className, const char* methodName, const char* variableName);
+void PrintSymbols();
 
 #endif

@@ -18,25 +18,69 @@ Date Work Commenced: 22/03/2024
 #include <stdio.h>
 #include <stdbool.h>
 #include <ctype.h>
-
+#include <dirent.h>
 
 #include "compiler.h"
+#include "symbols.h"
+
+int phaseNumber = 1;
 
 int InitCompiler ()
 {
+	InitProgramTable();
 	return 1;
 }
 
-ParserInfo compile (char* dir_name)
-{
-	ParserInfo p;
+ParserInfo compile(char* dir_name) {
 
-	// write your code below
+    ParserInfo p;
+    p.er = none;
 
+    DIR *dir;
+    struct dirent *entry;
 
-	p.er = none;
-	return p;
+    dir = opendir(dir_name);
+    if (dir == NULL) {
+        printf("Failed to open directory");
+        return p;
+    }
+
+    // First Pass: Build symbol tables
+    while ((entry = readdir(dir)) != NULL) {
+        if (entry->d_type == DT_REG) {
+            char file_path[1024];
+			printf("WEEEE");
+            sprintf(file_path, "%s/%s", dir_name, entry->d_name);
+            InitParser(file_path);
+            Parse();  // First phase
+            StopParser();
+        }
+    }
+
+    // Reset the directory stream to re-read the files
+    rewinddir(dir);
+
+	phaseNumber = 2;
+
+    // Second Pass: Semantic checks
+    while ((entry = readdir(dir)) != NULL) {
+        if (entry->d_type == DT_REG) {
+            char file_path[1024];
+            sprintf(file_path, "%s/%s", dir_name, entry->d_name);
+            InitParser(file_path);
+            p = Parse();  // Second phase
+            if (p.er != none) {
+                closedir(dir);
+                return p;
+            }
+            StopParser();
+        }
+    }
+
+    closedir(dir);
+    return p;
 }
+
 
 int StopCompiler ()
 {
@@ -50,6 +94,7 @@ int main ()
 	InitCompiler ();
 	ParserInfo p = compile ("Pong");
 	// PrintError (p);
+	PrintSymbols();
 	printf("POO");
 	StopCompiler ();
 	return 1;

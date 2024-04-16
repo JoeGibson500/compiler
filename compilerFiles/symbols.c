@@ -72,7 +72,6 @@ void InsertMethodSymbol(const char* className, const char* methodName) {
     // Initialize the variable symbols list to null
     newMethod->variableSymbols = NULL;
 
-
     // Find the appropriate class
     struct ClassSymbol* currentClass = (struct ClassSymbol*)malloc(sizeof(struct ClassSymbol));
     while(strcmp(currentClass->classSymbolName, className) && currentClass != NULL) {
@@ -120,7 +119,7 @@ void InsertVariableSymbol(const char* className, const char* methodName, const c
     currentMethod->variableSymbols = newVariable;
 }
 
-void PrintClassSymbols() {
+void PrintSymbols() {
     struct ClassSymbol* currentClass = programTable.classSymbols;
     while(currentClass != NULL) {
         printf("Class: %s\n", currentClass->classSymbolName);
@@ -144,66 +143,3 @@ void PrintClassSymbols() {
     }
 }
 
-void PrintMethodSymbols(const char* className) {
-    struct ClassSymbol* currentClass = programTable.classSymbols;
-    while(currentClass != NULL && strcmp(currentClass->className, className) != 0) {
-        currentClass = currentClass->next;
-    }
-
-    if(currentClass == NULL) {
-        printf("Class not found: %s\n", className);
-        return;
-    }
-
-    printf("Class: %s\n", currentClass->className);
-
-    // Print methods for this class
-    struct MethodSymbol* currentMethod = currentClass->methodSymbols;
-    while(currentMethod != NULL) {
-        printf("\tMethod: %s\n", currentMethod->methodSymbolName);
-
-        // Print variables for this method
-        struct VariableSymbol* currentVariable = currentMethod->variableSymbols;
-        while(currentVariable != NULL) {
-            printf("\t\tVariable: %s\n", currentVariable->variableName);
-            currentVariable = currentVariable->next;
-        }
-
-        currentMethod = currentMethod->next;
-    }
-}
-
-
-void PrintVariableSymbols(const char* className, const char* methodName) {
-    struct ClassSymbol* currentClass = programTable.classSymbols;
-    while(currentClass != NULL && strcmp(currentClass->className, className) != 0) {
-        currentClass = currentClass->next;
-    }
-
-    if(currentClass == NULL) {
-        printf("Class not found: %s\n", className);
-        return;
-    }
-
-    printf("Class: %s\n", currentClass->classSymbolName);
-
-    // Find the method in the class
-    struct MethodSymbol* currentMethod = currentClass->methodSymbols;
-    while(currentMethod != NULL && strcmp(currentMethod->methodSymbolName, methodName) != 0) {
-        currentMethod = currentMethod->next;
-    }
-
-    if(currentMethod == NULL) {
-        printf("Method not found: %s\n", methodName);
-        return;
-    }
-
-    printf("\tMethod: %s\n", currentMethod->methodSymbolName);
-
-    // Print variables for this method
-    struct VariableSymbol* currentVariable = currentMethod->variableSymbols;
-    while(currentVariable != NULL) {
-        printf("\t\tVariable: %s\n", currentVariable->variableName);
-        currentVariable = currentVariable->next;
-    }
-}
