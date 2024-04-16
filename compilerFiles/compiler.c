@@ -46,16 +46,24 @@ ParserInfo compile(char* dir_name) {
     }
 
     // First Pass: Build symbol tables
+	printf("FIRST PHASE\n");
+
     while ((entry = readdir(dir)) != NULL) {
         if (entry->d_type == DT_REG) {
             char file_path[1024];
-			printf("WEEEE");
             sprintf(file_path, "%s/%s", dir_name, entry->d_name);
+			printf("filepath = %s\n", file_path);
             InitParser(file_path);
             Parse();  // First phase
+            if (p.er != none) {
+                closedir(dir);
+                return p;
+            }
             StopParser();
         }
     }
+
+    PrintSymbols();
 
     // Reset the directory stream to re-read the files
     rewinddir(dir);
@@ -63,6 +71,7 @@ ParserInfo compile(char* dir_name) {
 	phaseNumber = 2;
 
     // Second Pass: Semantic checks
+	printf("SECOND PHASE\n");
     while ((entry = readdir(dir)) != NULL) {
         if (entry->d_type == DT_REG) {
             char file_path[1024];
@@ -94,7 +103,6 @@ int main ()
 	InitCompiler ();
 	ParserInfo p = compile ("Pong");
 	// PrintError (p);
-	PrintSymbols();
 	printf("POO");
 	StopCompiler ();
 	return 1;

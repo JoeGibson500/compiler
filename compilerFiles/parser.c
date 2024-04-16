@@ -264,13 +264,13 @@ ParserInfo classVarDeclar() {
 
 	if(t.tp == ID) {
 		//printf("Identifier found = %s\n", t.lx);
-		strcpy(currentMethodName, t.lx);
+		strcpy(currentVariableName, t.lx);
 		if (phaseNumber == 1) {
-			if (FindMethodSymbol(currentClassName, currentMethodName)) {
+			if (FindMethodSymbol(currentClassName, currentVariableName)) {
 				pi.er = redecIdentifier;
 				pi.tk = t;
 			} else {
-				InsertMethodSymbol(currentClassName, currentMethodName);
+				InsertMethodSymbol(currentClassName, currentVariableName);
 			}
 		}
 	} else {
@@ -295,7 +295,6 @@ ParserInfo classVarDeclar() {
 			strcpy(currentMethodName, t.lx);
 
 			if (phaseNumber == 1) {
-
 				if (FindMethodSymbol(currentClassName, currentMethodName)) {
 					pi.er = redecIdentifier;
 					pi.tk = t;
@@ -1649,16 +1648,14 @@ ParserInfo operand() {
 
 int InitParser (char* file_name) {
 
-	// printf("POOOOOOO");
 	InitLexer(file_name);
 	return 1;
-
+	
 }
 
 ParserInfo Parse ()
 {
 
-	RewindFile();
 	// phaseNumber = 2;
 	classDeclar();
 	printf("pi.er = %u, pi.tk = %s\n",  pi.er , t.lx);

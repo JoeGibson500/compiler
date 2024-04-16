@@ -19,6 +19,7 @@ Date Work Commenced: 12/03/2004
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 void InitProgramTable();
 void InsertClassSymbol(const char* className);
@@ -56,7 +57,6 @@ void InsertClassSymbol(const char* className) {
 
 }
 
-
 void InsertMethodSymbol(const char* className, const char* methodName) {
 
     // Create a new method
@@ -73,7 +73,9 @@ void InsertMethodSymbol(const char* className, const char* methodName) {
     newMethod->variableSymbols = NULL;
 
     // Find the appropriate class
-    struct ClassSymbol* currentClass = (struct ClassSymbol*)malloc(sizeof(struct ClassSymbol));
+    struct ClassSymbol* currentClass;
+
+    currentClass = programTable.classSymbols;
     while(strcmp(currentClass->classSymbolName, className) && currentClass != NULL) {
         currentClass = currentClass->next;
     }
@@ -91,14 +93,21 @@ void InsertMethodSymbol(const char* className, const char* methodName) {
 
 void InsertVariableSymbol(const char* className, const char* methodName, const char* variableName) {
 
-    // Create new variable symbol]
+    // Create new variable symbol
     struct VariableSymbol* newVariable = (struct VariableSymbol*)malloc(sizeof(struct VariableSymbol));
+
+    if (newVariable == NULL) {
+        printf("Failed to allocate memory for new variable\n");
+        return;
+    }
 
     // Copy variable name to new node
     strcpy(newVariable->variableSymbolName, variableName);
 
     // Find the appropriate class
-    struct ClassSymbol* currentClass = (struct ClassSymbol*)malloc(sizeof(struct ClassSymbol));
+    struct ClassSymbol* currentClass;
+
+    currentClass = programTable.classSymbols;
     while(strcmp(currentClass->classSymbolName, className) && currentClass != NULL) {
         currentClass = currentClass->next;
     }
@@ -109,17 +118,104 @@ void InsertVariableSymbol(const char* className, const char* methodName, const c
     }    
 
     // Find appropriate method within the current class
-    struct MethodSymbol* currentMethod = (struct MethodSymbol*)malloc(sizeof(struct MethodSymbol));
+
+    struct MethodSymbol* currentMethod;
+    currentMethod = currentClass->methodSymbols;
     while(strcmp(currentMethod->methodSymbolName, methodName) && currentMethod != NULL) {
         currentMethod = currentMethod->next;
     }
+
+    if(currentMethod == NULL) {
+        free(newVariable);
+    }    
 
     // Insert new variable into variable symbols list for the method
     newVariable->next = currentMethod->variableSymbols;
     currentMethod->variableSymbols = newVariable;
 }
 
+bool FindClassSymbol(const char* className) { 
+
+    struct ClassSymbol* currentClass = NULL;
+    
+    currentClass = programTable.classSymbols;
+    while(currentClass != NULL) {
+        if (!strcmp(currentClass->classSymbolName, className)) {
+            return true;
+        }
+        currentClass = currentClass->next;
+    }
+    return false;
+}
+
+bool FindMethodSymbol(const char* className, const char* methodName) {
+
+    // Initialize currentClass to NULL
+    struct ClassSymbol* currentClass = NULL;
+
+    // Find the appropriate class
+    currentClass = programTable.classSymbols;  // Start from the beginning of the class symbols list
+    while(currentClass != NULL && strcmp(currentClass->classSymbolName, className) != 0) {
+        currentClass = currentClass->next;
+    }
+
+    if(currentClass == NULL) {
+        // printf("Class not found %s", className);
+        return false;
+    }
+
+
+    struct MethodSymbol* currentMethod = NULL;
+    currentMethod = currentClass->methodSymbols;
+    while (currentMethod != NULL) {
+        if(!strcmp(currentMethod->methodSymbolName, methodName)) {
+            return true;
+        }
+        currentMethod = currentMethod->next;
+    }
+    
+    return false;
+}
+
+bool FindVariableSymbol(const char *className, const char* methodName, const char* variableName) {
+
+    // Initialize currentClass to NULL
+    struct ClassSymbol* currentClass = NULL;
+
+    // Find the appropriate class
+    currentClass = programTable.classSymbols;  // Start from the beginning of the class symbols list
+    while(currentClass != NULL && strcmp(currentClass->classSymbolName, className) != 0) {
+        currentClass = currentClass->next;
+    }
+
+    if(currentClass == NULL) {
+        return false;
+    }
+
+    struct MethodSymbol* currentMethod = NULL;
+    currentMethod = currentClass->methodSymbols;
+    while (currentMethod != NULL && strcmp(currentMethod->methodSymbolName, methodName)) {
+        currentMethod = currentMethod->next;
+    }
+
+    if(currentMethod == NULL) {
+        return false;
+    }
+
+    struct VariableSymbol* currentVariable = NULL;
+    currentVariable = currentMethod->variableSymbols;
+
+    while (currentVariable != NULL) {
+        if (!strcmp(currentVariable->variableSymbolName, variableName)) {
+            return true;
+        }
+        currentVariable = currentVariable->next;
+    }
+    return false;
+}
+
 void PrintSymbols() {
+    
     struct ClassSymbol* currentClass = programTable.classSymbols;
     while(currentClass != NULL) {
         printf("Class: %s\n", currentClass->classSymbolName);
@@ -142,4 +238,43 @@ void PrintSymbols() {
         currentClass = currentClass->next;
     }
 }
+
+// Static array to hold the library classes and their methods
+static struct LibraryClass libraryClasses[8] = {
+    {"Math", {{"abs"}, {"sqrt"}, {"min"}, {"max"}, {"divide"}, {"multiply"}}, 6},
+    {"String", {{"new"}, {"dispose"}, {"length"}, {"charAt"}, {"setCharAt"}, {"appendChar"}, {"eraseLastChar"}, {"intValue"}, {"setInt"}, {"newLine"}, {"backSpace"}, {"doubleQuote"}}, 12},
+    {"Array", {{"dispose"}, {"new"}}, 2},
+    {"Output", {{"printChar"}, {"printInt"}, {"println"}, {"moveCursor"}, {"printString"}, {"backSpace"}, {"init"}}, 7},
+    {"Screen", {{"drawPixel"}, {"drawLine"}, {"drawRectangle"}, {"drawCircle"}, {"setColor"}, {"clearScreen"}}, 6},
+    {"Keyboard", {{"keyPressed"}, {"readChar"}, {"readLine"}, {"readInt"}}, 4},
+    {"Memory", {{"peek"}, {"poke"}, {"alloc"}, {"deAlloc"}}, 4},
+    {"Sys", {{"halt"}, {"error"}, {"wait"}}, 3}
+};
+
+bool IsJackLibraryClass(const char* className) {
+    for (int i = 0; i < 7; i++) {
+        if (strcmp(libraryClasses[i].className, className) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool IsJackLibraryMethod(const char* className, const char* methodName) {
+    for (int i = 0; i < 7; i++) {
+        if (strcmp(libraryClasses[i].className, className) == 0) {
+            for (int j = 0; j < libraryClasses[i].methodCount; j++) {
+                if (strcmp(libraryClasses[i].methods[j].methodName, methodName) == 0) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+
+
+
+
 

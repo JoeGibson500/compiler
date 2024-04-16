@@ -28,6 +28,8 @@ Date Work Commenced: 08/02/2024
 
 // YOU CAN ADD YOUR OWN FUNCTIONS, DECLARATIONS AND VARIABLES HERE
 
+// void RewindFile();
+
 // List of JACK reserved words
 const char* resWords[] = {"class", "constructor", "method", "function", /* Program components */
                           "int", "boolean", "char", "void", /* Primitive types */
@@ -57,6 +59,8 @@ int InitLexer(char* file_name) {
     if(!file) {
         return 0;
     } 
+
+    fseek(file, 0, SEEK_SET);
 
     fileName = file_name;
   
@@ -334,6 +338,12 @@ int StopLexer() {
     fclose(file);
     return 0;
 }
+
+// void RewindFile() {
+//     fseek(file, 0, SEEK_SET);
+//     lineNumber = 1;  // Reset line number as well
+// }
+
 
 // do not remove the next line
 // #ifndef TEST

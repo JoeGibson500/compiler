@@ -3,6 +3,7 @@
 
 #include "lexer.h"
 #include "parser.h"
+#include <stdbool.h>
 
 struct VariableSymbol {
 
@@ -38,6 +39,20 @@ struct Program {
 } Program;
 
 
+
+struct LibraryMethod {
+    char methodName[128];
+};
+
+struct LibraryClass {
+    char className[128];
+    struct LibraryMethod methods[20];
+    int methodCount;
+};
+
+
+
+
 void InitProgramTable();
 void InitClassTable(const char* className);
 void InitMethodTable(const char* className, const char* methodName);
@@ -45,6 +60,15 @@ void InitMethodTable(const char* className, const char* methodName);
 void InsertClassSymbol(const char* className);
 void InsertMethodSymbol(const char* className, const char* methodName);
 void InsertVariableSymbol(const char* className, const char* methodName, const char* variableName);
+
+bool FindMethodSymbol(const char *className, const char* methodName);
+bool FindVariableSymbol(const char *className, const char* methodName, const char* variableName);
+bool FindClassSymbol(const char* className);
+
+
+bool IsJackLibraryClass(const char* className);
+bool IsJackLibraryMethod(const char* className, const char* methodName);
+
 void PrintSymbols();
 
 #endif

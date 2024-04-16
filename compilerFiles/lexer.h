@@ -28,4 +28,5 @@ int InitLexer (char* file);
 Token GetNextToken ();
 Token PeekNextToken ();
 int StopLexer ();
+
 #endif
