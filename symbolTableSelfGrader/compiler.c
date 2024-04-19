@@ -108,7 +108,7 @@ int StopCompiler ()
 int main ()
 {
 	InitCompiler ();
-	ParserInfo p = compile ("ComplexArrays");
+	ParserInfo p = compile ("UNDECLAR_EXT_METH");
     // printf("Parser error = %u", p.er);
 
 	// PrintError (p);

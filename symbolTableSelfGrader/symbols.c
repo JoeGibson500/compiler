@@ -324,8 +324,6 @@ bool IsJackLibraryClass(const char* className) {
 
 bool IsJackLibraryMethod(const char* className, const char* methodName) {
     for (int i = 0; i < 8; i++) {
-                // printf("%s compared with %s\n",libraryClasses[i].className, className);
-
         if (strcmp(libraryClasses[i].className, className) == 0) {
             for (int j = 0; j < libraryClasses[i].methodCount; j++) {
                 if (strcmp(libraryClasses[i].methods[j].methodName, methodName) == 0) {

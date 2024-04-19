@@ -1751,7 +1751,7 @@ ParserInfo Parse ()
 	classDeclar();
 	// // printf("pi.er = %u, pi.tk = %s\n",  pi.er , t.lx);
 	// PrintSymbols();
-	printf("error type: %u, line: %d, token: %s, phaseNumber = %d\n", pi.er, t.ln, t.lx, parserPhase);
+	// printf("error type: %u, line: %d, token: %s, phaseNumber = %d\n", pi.er, t.ln, t.lx, parserPhase);
 
 	return pi; 
 

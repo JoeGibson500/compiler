@@ -1,0 +1,147 @@
+	$$$ Checking your lexer, behold $$$
+	=========================================
+Started ...
+
+Testing your compiler on various JACK programs (1/2 mark each)
+JACK Program UNDECLAR_VAR:
+Directory name = UNDECLAR_VAR, symbol table should be empty : 
+	$$ Great PASSED :-)
+JACK Program REDECLAR_VAR:
+Directory name = REDECLAR_VAR, symbol table should be empty : 
+** Oops: your compiler returned the following info:
+error type: undeclared identifier, line: 8,token: t, 
+It should have returned:
+error type: redeclaration of identifier, line: 5,token: v, 
+Sorry, -1 mark
+JACK Program UNDECLAR_SUB:
+Directory name = UNDECLAR_SUB, symbol table should be empty : 
+** Oops: your compiler returned the following info:
+error type: undeclared identifier, line: 8,token: t, 
+It should have returned:
+error type: undeclared identifier, line: 11,token: Sub, 
+Sorry, -1 mark
+JACK Program DECLARED_SUB:
+Directory name = DECLARED_SUB, symbol table should be empty : 
+** Oops: your compiler returned the following info:
+error type: undeclared identifier, line: 8,token: t, 
+It should have returned:
+none
+Sorry, -1 mark
+JACK Program DECLARED_VAR:
+Directory name = DECLARED_VAR, symbol table should be empty : 
+** Oops: your compiler returned the following info:
+error type: undeclared identifier, line: 8,token: t, 
+It should have returned:
+none
+Sorry, -1 mark
+JACK Program DECLAR_EXT_FUN:
+Directory name = DECLAR_EXT_FUN, symbol table should be empty : 
+** Oops: your compiler returned the following info:
+error type: undeclared identifier, line: 8,token: t, 
+It should have returned:
+none
+Sorry, -1 mark
+JACK Program UNDECLAR_EXT_FUN:
+Directory name = UNDECLAR_EXT_FUN, symbol table should be empty : 
+** Oops: your compiler returned the following info:
+error type: undeclared identifier, line: 8,token: t, 
+It should have returned:
+error type: undeclared identifier, line: 7,token: N, 
+Sorry, -1 mark
+JACK Program UNDECLAR_EXT_METH:
+Directory name = UNDECLAR_EXT_METH, symbol table should be empty : 
+** Oops: your compiler returned the following info:
+error type: undeclared identifier, line: 8,token: t, 
+It should have returned:
+error type: undeclared identifier, line: 9,token: N, 
+Sorry, -1 mark
+JACK Program DECLAR_EXT_METH:
+Directory name = DECLAR_EXT_METH, symbol table should be empty : 
+** Oops: your compiler returned the following info:
+error type: undeclared identifier, line: 8,token: t, 
+It should have returned:
+none
+Sorry, -1 mark
+JACK Program UNDECLAR_CLASS:
+Directory name = UNDECLAR_CLASS, symbol table should be empty : 
+** Oops: your compiler returned the following info:
+error type: undeclared identifier, line: 8,token: t, 
+It should have returned:
+error type: undeclared identifier, line: 4,token: T, 
+Sorry, -1 mark
+JACK Program USES_MATH_LIB:
+Directory name = USES_MATH_LIB, symbol table should be empty : 
+** Oops: your compiler returned the following info:
+error type: undeclared identifier, line: 8,token: t, 
+It should have returned:
+none
+Sorry, -1 mark
+JACK Program ERR_MATH_LIB:
+Directory name = ERR_MATH_LIB, symbol table should be empty : 
+** Oops: your compiler returned the following info:
+error type: undeclared identifier, line: 8,token: t, 
+It should have returned:
+error type: undeclared identifier, line: 8,token: mult, 
+Sorry, -1 mark
+JACK Program Pong:
+Directory name = Pong, symbol table should be empty : 
+** Oops: your compiler returned the following info:
+error type: undeclared identifier, line: 8,token: t, 
+It should have returned:
+none
+Sorry, -1 mark
+JACK Program Square:
+Directory name = Square, symbol table should be empty : 
+** Oops: your compiler returned the following info:
+error type: undeclared identifier, line: 8,token: t, 
+It should have returned:
+none
+Sorry, -1 mark
+JACK Program StringTest:
+Directory name = StringTest, symbol table should be empty : 
+** Oops: your compiler returned the following info:
+error type: undeclared identifier, line: 8,token: t, 
+It should have returned:
+none
+Sorry, -1 mark
+JACK Program Square1:
+Directory name = Square1, symbol table should be empty : 
+** Oops: your compiler returned the following info:
+error type: undeclared identifier, line: 8,token: t, 
+It should have returned:
+error type: undeclared identifier, line: 12,token: nev, 
+Sorry, -1 mark
+JACK Program Square2:
+Directory name = Square2, symbol table should be empty : 
+** Oops: your compiler returned the following info:
+error type: undeclared identifier, line: 8,token: t, 
+It should have returned:
+error type: undeclared identifier, line: 45,token: moveRigh, 
+Sorry, -1 mark
+JACK Program Square3:
+Directory name = Square3, symbol table should be empty : 
+** Oops: your compiler returned the following info:
+error type: undeclared identifier, line: 8,token: t, 
+It should have returned:
+error type: undeclared identifier, line: 35,token: squar, 
+Sorry, -1 mark
+JACK Program ComplexArrays:
+Directory name = ComplexArrays, symbol table should be empty : 
+** Oops: your compiler returned the following info:
+error type: lexer error, line: 1,token: Error: illegal symbol in source file, 
+It should have returned:
+none
+Sorry, -1 mark
+JACK Program Pong1:
+Directory name = Pong1, symbol table should be empty : 
+** Oops: your compiler returned the following info:
+error type: lexer error, line: 1,token: Error: illegal symbol in source file, 
+It should have returned:
+error type: undeclared identifier, line: 26,token: bas, 
+Sorry, -1 mark
+
+---------------------------------------------------
+		Total mark = 0/10
+---------------------------------------------------
+
+Finished
